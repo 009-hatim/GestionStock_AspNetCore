@@ -122,13 +122,15 @@ Gestion/
 ├── Program.cs                        # Point d’entrée
 ├── Gestion.csproj                    # Configuration du projet
 └── Gestion.sln                       # Solution Visual Studio
-
+```
 ---
 
 ## 🎥 Vidéo démonstrative  
 
-https://github.com/user-attachments/assets/70430fb5-6860-4176-afd4-f4f4909c480a
 
----
+https://github.com/user-attachments/assets/7bbb71f0-cce7-4196-9c3d-1d842c5b6bcb
+
+
+
 
 
