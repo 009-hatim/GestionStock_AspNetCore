@@ -124,12 +124,11 @@ Gestion/
 └── Gestion.sln                       # Solution Visual Studio
 
 ---
-## 🎥 Vidéo démonstrative  
 
+## 🎥 Vidéo démonstrative  
 
 https://github.com/user-attachments/assets/70430fb5-6860-4176-afd4-f4f4909c480a
 
-
-
 ---
+
 
