@@ -68,6 +68,15 @@ Cette architecture assure une séparation claire des responsabilités et facilit
 
 ---
 
+
+## ⚙️ Diagramme de classes  
+
+Ce diagramme représente la structure du système ainsi que les relations entre les différentes entités métier  
+(utilisateur, produit, catégorie, fournisseur, facture et mouvements de stock).
+
+<img width="639" height="641" alt="image" src="https://github.com/user-attachments/assets/9c45d3cf-10a5-4965-9f52-11445cb15ddf" />
+
+
 ## 📌 Structure du Projet  
 
 ```bash
