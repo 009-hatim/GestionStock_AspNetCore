@@ -1,0 +1,1020 @@
+﻿@model Gestion.Models.Supplier
+
+@{
+    ViewData["Title"] = "Détails Fournisseur";
+}
+
+<style>
+    /* Variables CSS - Thème moderne */
+    :root {
+        --primary: #3b82f6;
+        --primary-hover: #2563eb;
+        --primary-light: rgba(59, 130, 246, 0.1);
+        --secondary: #6b7280;
+        --secondary-hover: #4b5563;
+        --warning: #f59e0b;
+        --warning-hover: #d97706;
+        --info: #06b6d4;
+        --success: #10b981;
+        --background: #f8fafc;
+        --surface: #ffffff;
+        --card-bg: #ffffff;
+        --border: #e2e8f0;
+        --border-light: #f1f5f9;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --text-muted: #94a3b8;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        --radius-sm: 0.375rem;
+        --radius: 0.5rem;
+        --radius-md: 0.75rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --glass-bg: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Animations */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    @@keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    @@keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    /* Styles de base */
+    body {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+    /* Container principal */
+    .container {
+        padding: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    /* Carte principale */
+    .details-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: var(--shadow-xl), 0 20px 60px rgba(31, 38, 135, 0.1);
+        width: 100%;
+        max-width: 900px;
+        overflow: hidden;
+        position: relative;
+        animation: slideInDown 0.6s ease-out;
+    }
+
+        .details-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--warning), var(--info));
+            background-size: 200% 200%;
+            animation: gradient 3s ease infinite;
+        }
+
+    /* Header */
+    .details-header {
+        padding: 2.5rem 2.5rem 1.5rem;
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-bottom: 1px solid var(--border-light);
+        position: relative;
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .supplier-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: var(--radius-lg);
+        background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        box-shadow: var(--shadow-md);
+        animation: pulse 2s infinite ease-in-out;
+    }
+
+    .header-text {
+        flex: 1;
+    }
+
+    h1 {
+        color: var(--text-primary);
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .supplier-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--primary-light);
+        color: var(--primary);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+        animation: slideInRight 0.5s ease-out 0.3s forwards;
+        opacity: 0;
+    }
+
+    /* Corps de la carte */
+    .details-body {
+        padding: 2.5rem;
+    }
+
+    /* Section informations */
+    .info-section {
+        margin-bottom: 2.5rem;
+        animation: fadeIn 0.6s ease-out 0.2s forwards;
+        opacity: 0;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--border-light);
+    }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, var(--border-light), transparent);
+        }
+
+    /* Grille d'informations */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .info-item {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        border: 2px solid var(--border);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .info-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .info-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--info));
+            border-radius: 2px 0 0 2px;
+        }
+
+    .info-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.4;
+    }
+
+        .info-value.empty {
+            color: var(--text-muted);
+            font-style: italic;
+            font-weight: 500;
+        }
+
+    /* Section actions */
+    .actions-section {
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        margin-top: 2rem;
+        border: 1px solid var(--border-light);
+        animation: fadeIn 0.6s ease-out 0.4s forwards;
+        opacity: 0;
+    }
+
+    .actions-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .actions-grid {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    /* Boutons */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.875rem 2rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: var(--radius);
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        gap: 0.75rem;
+        min-width: 160px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+    .btn-warning {
+        background: linear-gradient(135deg, var(--warning), var(--warning-hover));
+        color: white;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+            color: white;
+        }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, var(--secondary), var(--secondary-hover));
+        color: white;
+        box-shadow: var(--shadow);
+    }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+
+    .btn-info {
+        background: linear-gradient(135deg, var(--info), #0891b2);
+        color: white;
+        box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(6, 182, 212, 0.4);
+            color: white;
+        }
+
+    /* Badge ID */
+    .id-badge {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        font-size: 0.875rem;
+        font-weight: 600;
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: slideInRight 0.5s ease-out 0.2s forwards;
+        opacity: 0;
+    }
+
+    /* Timeline / Historique (optionnel) */
+    .timeline-section {
+        margin-top: 2rem;
+        animation: fadeIn 0.6s ease-out 0.5s forwards;
+        opacity: 0;
+    }
+
+    .timeline {
+        position: relative;
+        padding-left: 2rem;
+    }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), var(--info));
+        }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 1.5rem;
+        padding-left: 1rem;
+    }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+    .timeline-date {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .timeline-content {
+        font-size: 0.95rem;
+        color: var(--text-primary);
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+
+        .details-card {
+            border-radius: var(--radius-lg);
+        }
+
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .id-badge {
+            position: relative;
+            top: 0;
+            right: 0;
+            display: inline-flex;
+            margin-top: 1rem;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .actions-grid {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .supplier-icon {
+            width: 70px;
+            height: 70px;
+            font-size: 1.75rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* État de chargement */
+    .loading {
+        position: relative;
+        color: transparent !important;
+        overflow: hidden;
+    }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Effet de vague pour les boutons */
+    .btn-ripple {
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* QR Code pour contact (optionnel) */
+    .qrcode-section {
+        text-align: center;
+        padding: 2rem;
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        border: 2px dashed var(--border);
+        margin-top: 2rem;
+        animation: fadeIn 0.6s ease-out 0.6s forwards;
+        opacity: 0;
+    }
+
+    .qrcode-placeholder {
+        width: 150px;
+        height: 150px;
+        background: linear-gradient(135deg, var(--border-light), var(--border));
+        border-radius: var(--radius);
+        margin: 0 auto 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        font-size: 0.875rem;
+    }
+</style>
+
+<!-- Intégration des icônes Bootstrap -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+<div class="container">
+    <div class="details-card">
+        <!-- Badge ID -->
+        <div class="id-badge">
+            <i class="bi bi-hash"></i>
+            ID: #@Model.Id
+        </div>
+
+        <!-- En-tête -->
+        <div class="details-header">
+            <div class="header-content">
+                <div class="supplier-icon">
+                    <i class="bi bi-building"></i>
+                </div>
+                <div class="header-text">
+                    <h1>
+                        <i class="bi bi-info-circle-fill" style="color: var(--primary);"></i>
+                        Détails du Fournisseur
+                    </h1>
+                    <div class="supplier-status">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Fournisseur actif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Corps -->
+        <div class="details-body">
+            <!-- Section informations principales -->
+            <div class="info-section">
+                <h2 class="section-title">
+                    <i class="bi bi-card-heading" style="color: var(--primary);"></i>
+                    Informations principales
+                </h2>
+
+                <div class="info-grid">
+                    <!-- Identifiant -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-hash"></i>
+                            Identifiant
+                        </div>
+                        <div class="info-value">
+                            #@Html.DisplayFor(model => model.Id)
+                        </div>
+                    </div>
+
+                    <!-- Nom du fournisseur -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-building"></i>
+                            Nom du fournisseur
+                        </div>
+                        <div class="info-value">
+                            @Html.DisplayFor(model => model.Name)
+                        </div>
+                    </div>
+
+                    <!-- Téléphone -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-telephone"></i>
+                            Téléphone
+                        </div>
+                        <div class="info-value @(string.IsNullOrEmpty(Model.Phone) ? "empty" : "")">
+                            @if (!string.IsNullOrEmpty(Model.Phone))
+                            {
+                                <a href="tel:@Model.Phone" style="color: inherit; text-decoration: none;">
+                                    @Html.DisplayFor(model => model.Phone)
+                                    <i class="bi bi-telephone-outbound ms-2" style="font-size: 0.875rem;"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <span>Non renseigné</span>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Statut -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-activity"></i>
+                            Statut
+                        </div>
+                        <div class="info-value" style="color: var(--success);">
+                            <i class="bi bi-circle-fill" style="font-size: 0.75rem;"></i>
+                            Actif
+                        </div>
+                    </div>
+
+                    <!-- Date d'enregistrement -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-calendar-check"></i>
+                            Enregistré le
+                        </div>
+                        <div class="info-value">
+                            @DateTime.Now.ToString("dd/MM/yyyy")
+                        </div>
+                    </div>
+
+                    <!-- Dernière mise à jour -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-clock-history"></i>
+                            Dernière mise à jour
+                        </div>
+                        <div class="info-value">
+                            @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations complémentaires -->
+            <div class="info-section">
+                <h2 class="section-title">
+                    <i class="bi bi-info-square" style="color: var(--warning);"></i>
+                    Informations complémentaires
+                </h2>
+
+                <div class="info-grid">
+                    <!-- Nombre de produits -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-box-seam"></i>
+                            Produits fournis
+                        </div>
+                        <div class="info-value">
+                            <span id="productCount">0</span> produits
+                        </div>
+                    </div>
+
+                    <!-- Commandes en cours -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-cart-check"></i>
+                            Commandes actives
+                        </div>
+                        <div class="info-value">
+                            <span id="activeOrders">0</span> commandes
+                        </div>
+                    </div>
+
+                    <!-- Contact principal -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-person-badge"></i>
+                            Contact principal
+                        </div>
+                        <div class="info-value empty">
+                            Non spécifié
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline des activités -->
+            <div class="timeline-section">
+                <h2 class="section-title">
+                    <i class="bi bi-clock-history" style="color: var(--info);"></i>
+                    Dernières activités
+                </h2>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</div>
+                        <div class="timeline-content">Consultation des détails du fournisseur</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">@DateTime.Now.AddDays(-1).ToString("dd/MM/yyyy")</div>
+                        <div class="timeline-content">Mise à jour des informations</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">@DateTime.Now.AddDays(-7).ToString("dd/MM/yyyy")</div>
+                        <div class="timeline-content">Enregistrement dans le système</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions-section">
+                <h3 class="actions-title">
+                    <i class="bi bi-lightning-charge" style="color: var(--warning);"></i>
+                    Actions disponibles
+                </h3>
+
+                <div class="actions-grid">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                        <i class="bi bi-pencil-square"></i>
+                        Modifier le fournisseur
+                    </a>
+                    <a href="tel:@Model.Phone" class="btn btn-info" @(string.IsNullOrEmpty(Model.Phone) ? "disabled style='opacity: 0.5; cursor: not-allowed;'" : "")>
+                        <i class="bi bi-telephone-outbound"></i>
+                        Appeler le fournisseur
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i>
+                        Retour à la liste
+                    </a>
+                </div>
+            </div>
+
+            <!-- QR Code de contact (optionnel) -->
+            @if (!string.IsNullOrEmpty(Model.Phone))
+            {
+                <div class="qrcode-section">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1rem;">
+                        <i class="bi bi-qr-code me-2"></i>
+                        Contact rapide
+                    </h3>
+                    <div class="qrcode-placeholder">
+                        <div>
+                            <i class="bi bi-qr-code-scan" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                            <div>Scan pour contacter</div>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 1rem;">
+                        Scannez ce code QR pour enregistrer le contact
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation d'entrée
+        const elements = document.querySelectorAll('.info-section, .actions-section, .timeline-section, .qrcode-section');
+        elements.forEach((element, index) => {
+            element.style.animationDelay = `${index * 0.1}s`;
+        });
+
+        // Effet de ripple sur les boutons
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                // Ne pas créer d'effet si le bouton est désactivé
+                if (this.hasAttribute('disabled')) return;
+
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const ripple = document.createElement('span');
+                ripple.style.cssText = `
+                    position: absolute;
+                    top: ${y}px;
+                    left: ${x}px;
+                    width: 0;
+                    height: 0;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.4);
+                    transform: translate(-50%, -50%);
+                    pointer-events: none;
+                `;
+
+                this.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.style.width = '300px';
+                    ripple.style.height = '300px';
+                    ripple.style.opacity = '0';
+                }, 10);
+
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Simulation de données dynamiques
+        function simulateDynamicData() {
+            // Simuler un nombre aléatoire de produits
+            const productCount = Math.floor(Math.random() * 50) + 1;
+            document.getElementById('productCount').textContent = productCount;
+
+            // Simuler des commandes actives
+            const activeOrders = Math.floor(Math.random() * 10);
+            document.getElementById('activeOrders').textContent = activeOrders;
+
+            // Animation de comptage
+            animateCounter('productCount', productCount);
+            animateCounter('activeOrders', activeOrders);
+        }
+
+        // Animation de comptage
+        function animateCounter(elementId, finalValue) {
+            const element = document.getElementById(elementId);
+            const duration = 1000; // 1 seconde
+            const step = 20; // rafraîchissement toutes les 20ms
+            const increment = finalValue / (duration / step);
+            let currentValue = 0;
+
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= finalValue) {
+                    currentValue = finalValue;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(currentValue);
+            }, step);
+        }
+
+        // Copier les informations de contact
+        function copyContactInfo(type, value) {
+            if (!value || value === "Non renseigné") {
+                showNotification('Aucune information à copier', 'warning');
+                return;
+            }
+
+            navigator.clipboard.writeText(value).then(() => {
+                showNotification(`${type} copié dans le presse-papier`, 'success');
+            }).catch(err => {
+                console.error('Erreur de copie:', err);
+                showNotification('Erreur lors de la copie', 'error');
+            });
+        }
+
+        // Notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--success)' : type === 'warning' ? 'var(--warning)' : 'var(--danger)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-xl);
+                z-index: 1000;
+                animation: slideInDown 0.3s ease-out;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            `;
+
+            const icon = type === 'success' ? 'bi-check-circle-fill' :
+                        type === 'warning' ? 'bi-exclamation-triangle-fill' :
+                        'bi-x-circle-fill';
+
+            notification.innerHTML = `
+                <i class="bi ${icon}"></i>
+                <span>${message}</span>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease-out forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Ajouter l'animation fadeOut
+        const style = document.createElement('style');
+        style.textContent = `
+            @@keyframes fadeOut {
+                from { opacity: 1; transform: translateY(0); }
+                to { opacity: 0; transform: translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Ajouter des boutons de copie
+        const phoneValue = document.querySelector('.info-value:not(.empty) a');
+        if (phoneValue) {
+            const phoneText = phoneValue.textContent.trim();
+            const copyBtn = document.createElement('button');
+            copyBtn.innerHTML = '<i class="bi bi-copy"></i>';
+            copyBtn.style.cssText = `
+                background: none;
+                border: none;
+                color: var(--primary);
+                cursor: pointer;
+                margin-left: 0.5rem;
+                font-size: 0.875rem;
+                opacity: 0.6;
+                transition: opacity 0.3s;
+            `;
+            copyBtn.addEventListener('mouseenter', () => copyBtn.style.opacity = '1');
+            copyBtn.addEventListener('mouseleave', () => copyBtn.style.opacity = '0.6');
+            copyBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                copyContactInfo('Numéro de téléphone', phoneText);
+            });
+            phoneValue.appendChild(copyBtn);
+        }
+
+        // Initialiser les données simulées
+        simulateDynamicData();
+
+        // Animation au survol des cartes d'info
+        const infoItems = document.querySelectorAll('.info-item');
+        infoItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                const icon = this.querySelector('.info-label i');
+                if (icon) {
+                    icon.style.transform = 'scale(1.2)';
+                    icon.style.transition = 'transform 0.3s ease';
+                }
+            });
+
+            item.addEventListener('mouseleave', function() {
+                const icon = this.querySelector('.info-label i');
+                if (icon) {
+                    icon.style.transform = 'scale(1)';
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,980 @@
+﻿@model Gestion.Models.Supplier
+
+@{
+    ViewData["Title"] = "Modifier Fournisseur";
+}
+
+<style>
+    /* Variables CSS - Thème moderne */
+    :root {
+        --primary: #3b82f6;
+        --primary-hover: #2563eb;
+        --primary-light: rgba(59, 130, 246, 0.1);
+        --secondary: #6b7280;
+        --secondary-hover: #4b5563;
+        --warning: #f59e0b;
+        --warning-hover: #d97706;
+        --success: #10b981;
+        --danger: #ef4444;
+        --background: #f8fafc;
+        --surface: #ffffff;
+        --card-bg: #ffffff;
+        --border: #e2e8f0;
+        --border-light: #f1f5f9;
+        --border-focus: #93c5fd;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --text-muted: #94a3b8;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        --radius-sm: 0.375rem;
+        --radius: 0.5rem;
+        --radius-md: 0.75rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --glass-bg: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Animations */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+        }
+
+        50% {
+            box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+        }
+    }
+
+    @@keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    @@keyframes shake {
+        0%, 100% {
+            transform: translateX(0);
+        }
+
+        10%, 30%, 50%, 70%, 90% {
+            transform: translateX(-5px);
+        }
+
+        20%, 40%, 60%, 80% {
+            transform: translateX(5px);
+        }
+    }
+
+    /* Styles de base */
+    body {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.1) 0%, transparent 40%);
+            z-index: -1;
+        }
+
+    /* Container principal */
+    .container {
+        padding: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    /* Carte principale */
+    .edit-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: var(--shadow-xl), 0 20px 60px rgba(31, 38, 135, 0.1);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 500px;
+        position: relative;
+        overflow: hidden;
+        animation: slideInDown 0.5s ease-out;
+    }
+
+        .edit-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--warning), var(--primary), var(--success));
+            background-size: 200% 200%;
+            animation: gradient 3s ease infinite;
+        }
+
+    /* En-tête */
+    .edit-header {
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+    }
+
+    h1 {
+        color: var(--text-primary);
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .edit-subtitle {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .supplier-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, var(--warning-light), transparent);
+        border: 2px solid rgba(245, 158, 11, 0.2);
+        color: var(--warning);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        animation: pulse 2s infinite;
+    }
+
+    /* Séparateur */
+    hr {
+        margin: 1.5rem 0;
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--border), transparent );
+        opacity: 0.5;
+    }
+
+    /* Formulaire */
+    form {
+        animation: slideInUp 0.6s ease-out 0.2s forwards;
+        opacity: 0;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .control-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        padding-left: 3rem;
+        font-size: 0.95rem;
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text-primary);
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .form-control:hover {
+            border-color: var(--border-focus);
+        }
+
+    /* Icônes des champs */
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 2.75rem;
+        color: var(--text-muted);
+        pointer-events: none;
+        transition: var(--transition);
+        z-index: 10;
+    }
+
+    .form-control:focus + .input-icon {
+        color: var(--primary);
+        transform: scale(1.1);
+    }
+
+    /* Champ ID (lecture seule) */
+    .id-display {
+        background: linear-gradient(135deg, var(--primary-light), transparent);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        padding: 0.875rem 1rem;
+        padding-left: 3rem;
+        font-size: 0.95rem;
+        color: var(--text-primary);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .id-display::before {
+            content: '#';
+            position: absolute;
+            left: 1rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+    /* Messages de validation */
+    .text-danger {
+        font-size: 0.8125rem;
+        margin-top: 0.375rem;
+        color: var(--danger);
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Validation summary */
+    .validation-summary-errors {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: var(--radius);
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        color: var(--danger);
+        font-size: 0.875rem;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+        .validation-summary-errors ul {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+    /* Section actions */
+    .actions-section {
+        margin-top: 2.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border-light);
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    /* Boutons */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.875rem 2rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: var(--radius);
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+        flex: 1;
+        min-width: 140px;
+        gap: 0.75rem;
+    }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+        color: white;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+            color: white;
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, var(--secondary), var(--secondary-hover));
+        color: white;
+        box-shadow: var(--shadow);
+    }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+
+    /* Indicateur de champ modifié */
+    .form-control.modified {
+        border-color: var(--warning);
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), white);
+        animation: pulse 1s;
+    }
+
+    /* Compteur de caractères */
+    .char-counter {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        text-align: right;
+        margin-top: 0.25rem;
+        transition: var(--transition);
+    }
+
+        .char-counter.warning {
+            color: var(--warning);
+        }
+
+        .char-counter.danger {
+            color: var(--danger);
+            animation: shake 0.5s;
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+
+        .edit-card {
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        .actions-section {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .form-control {
+            padding-left: 2.5rem;
+        }
+
+        .input-icon {
+            left: 0.875rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .edit-card {
+            padding: 1.25rem;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+        }
+
+        .edit-subtitle {
+            font-size: 0.875rem;
+        }
+    }
+
+    /* État de chargement */
+    .btn.loading {
+        position: relative;
+        color: transparent;
+    }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Prévisualisation en temps réel */
+    .preview-section {
+        background: linear-gradient(135deg, var(--primary-light), transparent);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        margin-top: 2rem;
+        border: 2px dashed var(--border);
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .preview-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .preview-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .preview-item {
+        background: white;
+        padding: 1rem;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+    }
+
+    .preview-label {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.25rem;
+    }
+
+    .preview-value {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    /* Confirmation de sauvegarde */
+    .save-confirmation {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--success);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-xl);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        animation: slideInDown 0.3s ease-out;
+        display: none;
+    }
+
+    /* Effet de vague pour les boutons */
+    .btn-ripple {
+        position: relative;
+        overflow: hidden;
+    }
+</style>
+
+<!-- Intégration des icônes Bootstrap -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+<div class="container">
+    <div class="edit-card">
+        <!-- En-tête -->
+        <div class="edit-header">
+            <h1>
+                <i class="bi bi-pencil-square" style="color: var(--warning);"></i>
+                Modifier le Fournisseur
+            </h1>
+
+            <div class="supplier-badge">
+                <i class="bi bi-building"></i>
+                Fournisseur #@Model.Id
+            </div>
+
+            <p class="edit-subtitle">
+                Mettez à jour les informations du fournisseur
+            </p>
+        </div>
+
+        <hr />
+
+        <!-- Formulaire de modification -->
+        <form asp-action="Edit" id="editForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Champ ID (lecture seule) -->
+            <div class="form-group">
+                <label class="control-label">
+                    <i class="bi bi-hash"></i>
+                    Identifiant
+                </label>
+                <div class="id-display">
+                    @Model.Id
+                </div>
+                <input type="hidden" asp-for="Id" />
+            </div>
+
+            <!-- Champ Nom -->
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">
+                    <i class="bi bi-building"></i>
+                    Nom du Fournisseur
+                </label>
+                <i class="bi bi-building input-icon"></i>
+                <input asp-for="Name"
+                       class="form-control"
+                       placeholder="Entrez le nom du fournisseur"
+                       autocomplete="organization"
+                       id="nameInput"
+                       maxlength="100" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+                <div class="char-counter" id="nameCounter">
+                    <span id="nameLength">0</span>/100 caractères
+                </div>
+            </div>
+
+            <!-- Champ Téléphone -->
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label">
+                    <i class="bi bi-telephone"></i>
+                    Téléphone
+                </label>
+                <i class="bi bi-telephone input-icon"></i>
+                <input asp-for="Phone"
+                       class="form-control"
+                       placeholder="Entrez le numéro de téléphone"
+                       autocomplete="tel"
+                       pattern="[0-9+\s\-\(\)]+"
+                       id="phoneInput" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+                <div class="form-text" style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.25rem;">
+                    Format: +212 6XX-XXXXXX ou 0X XX XX XX XX
+                </div>
+            </div>
+
+            <!-- Prévisualisation -->
+            <div class="preview-section" id="previewSection">
+                <div class="preview-title">
+                    <i class="bi bi-eye"></i>
+                    Prévisualisation
+                </div>
+                <div class="preview-content">
+                    <div class="preview-item">
+                        <div class="preview-label">Nom</div>
+                        <div class="preview-value" id="previewName">@Model.Name</div>
+                    </div>
+                    <div class="preview-item">
+                        <div class="preview-label">Téléphone</div>
+                        <div class="preview-value" id="previewPhone">
+                            @(string.IsNullOrEmpty(Model.Phone) ? "Non renseigné" : Model.Phone)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions-section">
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <i class="bi bi-check-circle"></i>
+                    Sauvegarder les modifications
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Retour à la liste
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Confirmation de sauvegarde -->
+<div class="save-confirmation" id="saveConfirmation">
+    <i class="bi bi-check-circle-fill"></i>
+    <span>Modifications sauvegardées avec succès</span>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('editForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const nameInput = document.getElementById('nameInput');
+        const phoneInput = document.getElementById('phoneInput');
+        const nameCounter = document.getElementById('nameCounter');
+        const nameLength = document.getElementById('nameLength');
+        const previewName = document.getElementById('previewName');
+        const previewPhone = document.getElementById('previewPhone');
+        const previewSection = document.getElementById('previewSection');
+        const saveConfirmation = document.getElementById('saveConfirmation');
+
+        // Initialiser le compteur de caractères
+        nameLength.textContent = nameInput.value.length;
+
+        // Mettre à jour la prévisualisation
+        function updatePreview() {
+            previewName.textContent = nameInput.value || 'Non renseigné';
+            previewPhone.textContent = phoneInput.value || 'Non renseigné';
+
+            // Afficher/masquer la prévisualisation
+            if (nameInput.value || phoneInput.value) {
+                previewSection.style.display = 'block';
+            } else {
+                previewSection.style.display = 'none';
+            }
+        }
+
+        // Suivi des modifications
+        let originalValues = {
+            name: nameInput.value,
+            phone: phoneInput.value
+        };
+
+        function checkForChanges() {
+            const hasChanges = nameInput.value !== originalValues.name ||
+                             phoneInput.value !== originalValues.phone;
+
+            if (hasChanges) {
+                submitBtn.innerHTML = '<i class="bi bi-save"></i> Sauvegarder les modifications';
+                submitBtn.classList.remove('btn-primary');
+                submitBtn.classList.add('btn-warning');
+                submitBtn.style.background = 'linear-gradient(135deg, var(--warning), var(--warning-hover))';
+            } else {
+                submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> Aucune modification';
+                submitBtn.classList.remove('btn-warning');
+                submitBtn.classList.add('btn-primary');
+                submitBtn.style.background = 'linear-gradient(135deg, var(--primary), var(--primary-hover))';
+            }
+        }
+
+        // Événements pour les champs
+        nameInput.addEventListener('input', function() {
+            // Mettre à jour le compteur
+            const length = this.value.length;
+            nameLength.textContent = length;
+
+            // Changer la couleur du compteur
+            if (length > 90) {
+                nameCounter.classList.add('danger');
+                nameCounter.classList.remove('warning');
+            } else if (length > 70) {
+                nameCounter.classList.add('warning');
+                nameCounter.classList.remove('danger');
+            } else {
+                nameCounter.classList.remove('warning', 'danger');
+            }
+
+            // Marquer comme modifié
+            if (this.value !== originalValues.name) {
+                this.classList.add('modified');
+            } else {
+                this.classList.remove('modified');
+            }
+
+            // Mettre à jour la prévisualisation
+            updatePreview();
+            checkForChanges();
+        });
+
+        phoneInput.addEventListener('input', function() {
+            // Marquer comme modifié
+            if (this.value !== originalValues.phone) {
+                this.classList.add('modified');
+            } else {
+                this.classList.remove('modified');
+            }
+
+            // Mettre à jour la prévisualisation
+            updatePreview();
+            checkForChanges();
+        });
+
+        // Validation du téléphone
+        phoneInput.addEventListener('blur', function() {
+            const phone = this.value.trim();
+            if (phone && !/^[\d\s\-\+\(\)]{8,15}$/.test(phone.replace(/\s/g, ''))) {
+                this.classList.add('is-invalid');
+                const errorSpan = this.nextElementSibling;
+                if (errorSpan) {
+                    errorSpan.textContent = 'Format de téléphone invalide';
+                    errorSpan.style.opacity = '1';
+                    errorSpan.style.display = 'block';
+                }
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+
+        // Soumission du formulaire
+        form.addEventListener('submit', function(e) {
+            // Vérifier les changements
+            if (nameInput.value === originalValues.name &&
+                phoneInput.value === originalValues.phone) {
+                e.preventDefault();
+                showNotification('Aucune modification à sauvegarder', 'info');
+                return;
+            }
+
+            // Animation de chargement
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Sauvegarde en cours...';
+
+            // Simuler un délai pour l'animation
+            setTimeout(() => {
+                // Afficher la confirmation
+                saveConfirmation.style.display = 'flex';
+                setTimeout(() => {
+                    saveConfirmation.style.animation = 'fadeOut 0.3s ease-out forwards';
+                    setTimeout(() => {
+                        saveConfirmation.style.display = 'none';
+                        saveConfirmation.style.animation = '';
+                    }, 300);
+                }, 2000);
+            }, 1000);
+        });
+
+        // Effet de ripple sur les boutons
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const ripple = document.createElement('span');
+                ripple.style.cssText = `
+                    position: absolute;
+                    top: ${y}px;
+                    left: ${x}px;
+                    width: 0;
+                    height: 0;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.4);
+                    transform: translate(-50%, -50%);
+                    pointer-events: none;
+                `;
+
+                this.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.style.width = '300px';
+                    ripple.style.height = '300px';
+                    ripple.style.opacity = '0';
+                }, 10);
+
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Focus sur le premier champ
+        setTimeout(() => {
+            nameInput.focus();
+            nameInput.select();
+        }, 500);
+
+        // Initialiser la prévisualisation
+        updatePreview();
+        checkForChanges();
+
+        // Notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--success)' :
+                           type === 'warning' ? 'var(--warning)' :
+                           type === 'info' ? 'var(--info)' : 'var(--danger)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-xl);
+                z-index: 1000;
+                animation: slideInDown 0.3s ease-out;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            `;
+
+            const icon = type === 'success' ? 'bi-check-circle-fill' :
+                        type === 'warning' ? 'bi-exclamation-triangle-fill' :
+                        type === 'info' ? 'bi-info-circle-fill' : 'bi-x-circle-fill';
+
+            notification.innerHTML = `
+                <i class="bi ${icon}"></i>
+                <span>${message}</span>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease-out forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Ajouter l'animation fadeOut
+        const style = document.createElement('style');
+        style.textContent = `
+            @@keyframes fadeOut {
+                from { opacity: 1; transform: translateY(0); }
+                to { opacity: 0; transform: translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Sauvegarde automatique (simulée)
+        let autoSaveTimer;
+        const autoSaveInterval = 30000; // 30 secondes
+
+        function setupAutoSave() {
+            autoSaveTimer = setInterval(() => {
+                if (nameInput.value !== originalValues.name ||
+                    phoneInput.value !== originalValues.phone) {
+                    showNotification('Sauvegarde automatique...', 'info');
+                }
+            }, autoSaveInterval);
+        }
+
+        // Démarrer la sauvegarde automatique
+        setupAutoSave();
+
+        // Nettoyer à la déconnexion
+        window.addEventListener('beforeunload', function(e) {
+            if (nameInput.value !== originalValues.name ||
+                phoneInput.value !== originalValues.phone) {
+                e.preventDefault();
+                e.returnValue = 'Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir quitter ?';
+                return e.returnValue;
+            }
+        });
+
+        // Annuler les modifications
+        const cancelBtn = document.querySelector('.btn-secondary');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function(e) {
+                if (nameInput.value !== originalValues.name ||
+                    phoneInput.value !== originalValues.phone) {
+                    if (!confirm('Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir quitter ?')) {
+                        e.preventDefault();
+                    }
+                }
+            });
+        }
+    });
+</script>

@@ -1,0 +1,715 @@
+﻿@model Gestion.Models.Category
+
+@{
+    ViewData["Title"] = "Modifier Catégorie";
+}
+
+<style>
+    /* Variables CSS dynamiques */
+    :root {
+        --primary-color: #3b82f6;
+        --primary-hover: #2563eb;
+        --secondary-color: #6b7280;
+        --secondary-hover: #4b5563;
+        --success-color: #10b981;
+        --success-hover: #059669;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #06b6d4;
+        --card-bg: #ffffff;
+        --border-color: #e5e7eb;
+        --input-border: #d1d5db;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        --radius-md: 10px;
+        --radius-lg: 16px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Page Container */
+    body {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .container {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+    }
+
+    /* Header Styling */
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 0.75rem;
+        background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: slideInDown 0.5s ease-out;
+    }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+            border-radius: 2px;
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: expandLine 0.8s ease-out 0.3s forwards;
+        }
+
+    hr {
+        margin: 2rem 0;
+        border: none;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+        opacity: 0.5;
+        animation: fadeIn 0.8s ease-out 0.4s forwards;
+        opacity: 0;
+    }
+
+    /* Form Container */
+    .row {
+        display: flex;
+        justify-content: center;
+        animation: fadeInUp 0.6s ease-out 0.2s forwards;
+        opacity: 0;
+    }
+
+    .col-md-4 {
+        flex: 0 0 100%;
+        max-width: 500px;
+        padding: 0 1rem;
+    }
+
+    /* Form Card */
+    .form-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        padding: 2.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+        transition: var(--transition);
+    }
+
+        .form-card:hover {
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-5px);
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+            animation: shimmer 3s infinite linear;
+        }
+
+    /* Form Styling */
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    /* Validation Summary */
+    .text-danger[asp-validation-summary="ModelOnly"] {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: var(--radius-md);
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        color: var(--danger-color);
+        animation: shake 0.5s ease-in-out;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+        .text-danger[asp-validation-summary="ModelOnly"]::before {
+            content: '⚠️';
+            font-size: 1.1rem;
+        }
+
+    /* Hidden Input */
+    input[type="hidden"] {
+        display: none;
+    }
+
+    /* Form Group */
+    .form-group {
+        margin-bottom: 0;
+        animation: slideInRight 0.5s ease-out forwards;
+        opacity: 0;
+    }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+    /* Label Styling */
+    .control-label {
+        display: block;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+    }
+
+        .control-label::before {
+            content: '📝';
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .control-label:hover::before {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+    /* Input Styling */
+    .form-control {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        font-size: 1rem;
+        color: var(--text-primary);
+        background: #f8fafc;
+        border: 2px solid var(--input-border);
+        border-radius: var(--radius-md);
+        transition: var(--transition);
+        font-family: inherit;
+        box-shadow: var(--shadow-sm);
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            transform: translateY(-1px);
+            animation: pulse 2s infinite;
+        }
+
+        .form-control:hover:not(:focus) {
+            border-color: #9ca3af;
+            transform: translateY(-1px);
+        }
+
+    /* Validation Message */
+    .text-danger[data-valmsg-for="Name"] {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--danger-color);
+        animation: fadeIn 0.3s ease;
+    }
+
+        .text-danger[data-valmsg-for="Name"]::before {
+            content: '⚠️';
+            font-size: 0.9rem;
+        }
+
+    /* Button Container */
+    .form-group.mt-3 {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem !important;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border-color);
+        animation: slideInUp 0.5s ease-out 0.5s forwards;
+        opacity: 0;
+    }
+
+    /* Button Styling */
+    input[type="submit"], .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+        min-width: 140px;
+    }
+
+        input[type="submit"]::before, .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        input[type="submit"]:hover::before, .btn:hover::before {
+            left: 100%;
+        }
+
+    /* Submit Button */
+    input[type="submit"] {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+        color: white;
+        box-shadow: var(--shadow-md);
+    }
+
+        input[type="submit"]:hover {
+            background: linear-gradient(135deg, var(--primary-hover), #2d4bd4);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        input[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+    /* Secondary Button */
+    .btn-secondary {
+        background: linear-gradient(135deg, var(--secondary-color), var(--secondary-hover));
+        color: white;
+        box-shadow: var(--shadow-sm);
+    }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--secondary-hover), #4a545b);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+
+    /* Status Indicators */
+    .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        margin-left: 1rem;
+        font-size: 0.875rem;
+        color: var(--primary-color);
+        font-weight: 500;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        animation: pulse 2s infinite;
+    }
+
+    /* Animations */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes expandLine {
+        from {
+            transform: scaleX(0);
+        }
+
+        to {
+            transform: scaleX(1);
+        }
+    }
+
+    @@keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+        }
+    }
+
+    @@keyframes shake {
+        0%, 100% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-5px);
+        }
+
+        75% {
+            transform: translateX(5px);
+        }
+    }
+
+    /* Success State */
+    .form-control.valid {
+        border-color: var(--success-color);
+        background-color: rgba(16, 185, 129, 0.05);
+    }
+
+        .form-control.valid:focus {
+            animation: none;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+    /* Loading Animation */
+    input[type="submit"].loading {
+        position: relative;
+        color: transparent;
+    }
+
+        input[type="submit"].loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .container {
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        .form-card {
+            padding: 2rem;
+        }
+
+        .form-group.mt-3 {
+            flex-direction: column;
+        }
+
+        input[type="submit"], .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .container {
+            padding: 1rem;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        .form-card {
+            padding: 1.5rem;
+        }
+
+        .form-control {
+            padding: 0.875rem 1rem;
+        }
+    }
+
+    /* Floating Labels Effect */
+    .floating-label-group {
+        position: relative;
+    }
+
+    .floating-label {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        transition: var(--transition);
+        pointer-events: none;
+        background: #f8fafc;
+        padding: 0 0.25rem;
+    }
+
+    .form-control:focus + .floating-label,
+    .form-control:not(:placeholder-shown) + .floating-label {
+        top: 0;
+        font-size: 0.75rem;
+        color: var(--primary-color);
+        font-weight: 500;
+        background: white;
+    }
+</style>
+
+<div class="container">
+    <div>
+        <h1>Modifier la Catégorie <span class="status-indicator"><span class="status-dot"></span>En édition</span></h1>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-card">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="form-group floating-label-group">
+                            <label asp-for="Name" class="control-label">Nom</label>
+                            <input asp-for="Name" class="form-control" placeholder=" " />
+                            <span class="floating-label">Nom de la catégorie</span>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <input type="submit" value="Sauvegarder" class="btn-primary" />
+                            <a asp-action="Index" class="btn btn-secondary">Retour</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const submitBtn = form.querySelector('input[type="submit"]');
+        const nameInput = document.querySelector('[asp-for="Name"]');
+
+        // Auto-focus on name input
+        if (nameInput) {
+            setTimeout(() => {
+                nameInput.focus();
+                nameInput.select();
+            }, 300);
+        }
+
+        // Real-time validation
+        if (nameInput) {
+            nameInput.addEventListener('input', function() {
+                validateField(this);
+            });
+
+            nameInput.addEventListener('blur', function() {
+                validateField(this, true);
+            });
+        }
+
+        function validateField(field, showError = false) {
+            const errorSpan = field.nextElementSibling?.nextElementSibling;
+
+            if (field.value.trim().length === 0) {
+                if (showError && errorSpan) {
+                    field.classList.remove('valid');
+                    field.classList.add('error');
+                }
+                return false;
+            }
+
+            if (field.value.trim().length < 2) {
+                if (showError && errorSpan) {
+                    field.classList.remove('valid');
+                    field.classList.add('error');
+                }
+                return false;
+            }
+
+            // Valid
+            field.classList.add('valid');
+            field.classList.remove('error');
+            return true;
+        }
+
+        // Form submission enhancement
+        form.addEventListener('submit', function(e) {
+            // Validate before submit
+            if (nameInput && !validateField(nameInput, true)) {
+                e.preventDefault();
+                return;
+            }
+
+            // Add loading animation
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            // Reset after 3 seconds (in case of error)
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }, 3000);
+        });
+
+        // Add floating label functionality
+        if (nameInput) {
+            nameInput.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+
+            nameInput.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+
+            // Check initial value
+            if (nameInput.value) {
+                nameInput.parentElement.classList.add('focused');
+            }
+        }
+
+        // Add character counter
+        const counter = document.createElement('div');
+        counter.className = 'character-counter';
+        counter.style.cssText = `
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-align: right;
+            margin-top: 0.5rem;
+            opacity: 0.7;
+            transition: var(--transition);
+        `;
+
+        if (nameInput) {
+            nameInput.parentElement.appendChild(counter);
+
+            nameInput.addEventListener('input', function() {
+                const length = this.value.length;
+                counter.textContent = `${length} caractères`;
+
+                if (length > 0 && length < 2) {
+                    counter.style.color = 'var(--danger-color)';
+                } else if (length >= 2 && length < 50) {
+                    counter.style.color = 'var(--success-color)';
+                } else if (length >= 50) {
+                    counter.style.color = 'var(--warning-color)';
+                } else {
+                    counter.style.color = 'var(--text-secondary)';
+                }
+            });
+
+            // Trigger initial update
+            nameInput.dispatchEvent(new Event('input'));
+        }
+
+        // Add animation to form elements
+        const formElements = form.querySelectorAll('.form-group');
+        formElements.forEach((element, index) => {
+            element.style.animationDelay = `${index * 0.1 + 0.2}s`;
+        });
+    });
+</script>

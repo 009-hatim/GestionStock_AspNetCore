@@ -1,0 +1,990 @@
+﻿@model Gestion.Models.Product
+
+@{
+    ViewData["Title"] = "Détails Produit";
+    var stockPercentage = (Model.Quantity * 100) / Math.Max(Model.MinimumStock * 3, 1);
+    var stockStatus = stockPercentage <= 33 ? "danger" : stockPercentage <= 66 ? "warning" : "good";
+    var marginPercentage = ((Model.SalePrice - Model.PurchasePrice) / Model.PurchasePrice * 100);
+}
+
+<!-- CSS Personnalisé Premium -->
+<style>
+    /* Variables de thème premium */
+    :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --primary-light: rgba(79, 70, 229, 0.1);
+        --secondary: #6b7280;
+        --secondary-hover: #4b5563;
+        --success: #10b981;
+        --success-hover: #0d966d;
+        --success-light: rgba(16, 185, 129, 0.1);
+        --warning: #f59e0b;
+        --warning-hover: #d97706;
+        --warning-light: rgba(245, 158, 11, 0.1);
+        --danger: #ef4444;
+        --danger-hover: #dc2626;
+        --danger-light: rgba(239, 68, 68, 0.1);
+        --info: #0ea5e9;
+        --info-hover: #0284c7;
+        --info-light: rgba(14, 165, 233, 0.1);
+        --dark: #1e293b;
+        --light: #f8fafc;
+        --card-bg: #ffffff;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        --shadow-xxl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        --radius-sm: 0.5rem;
+        --radius-md: 0.75rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.25rem;
+        --radius-2xl: 1.5rem;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Reset et styles généraux */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+        min-height: 100vh;
+        color: var(--dark);
+        overflow-x: hidden;
+    }
+
+        /* Effet de particules en arrière-plan */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(79, 70, 229, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(245, 158, 11, 0.03) 0%, transparent 50%);
+            z-index: -1;
+            animation: floatBackground 20s infinite linear;
+        }
+
+    .container-main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        min-height: 100vh;
+    }
+
+    /* En-tête premium */
+    .header-premium {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98));
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-xl);
+        padding: 2.5rem 3rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+        animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+        .header-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success), var(--warning));
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+    /* Titre principal avec gradient animé */
+    .title-gradient {
+        font-size: 2.5rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--primary), #8b5cf6, var(--success));
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradientShift 5s ease infinite;
+        letter-spacing: -0.025em;
+        position: relative;
+        display: inline-block;
+        margin-bottom: 0.5rem;
+    }
+
+        .title-gradient::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 2px;
+            animation: expandWidth 1s ease-out 0.5s forwards;
+            transform-origin: left;
+            transform: scaleX(0);
+        }
+
+    /* Badge ID */
+    .product-id-badge {
+        background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: var(--radius-lg);
+        font-weight: 700;
+        font-size: 1.125rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        box-shadow: var(--shadow-md);
+        animation: badgePulse 3s infinite ease-in-out;
+    }
+
+    /* Carte de détails premium */
+    .details-card {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: var(--radius-xl);
+        padding: 3rem;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+        animation: cardAppear 0.6s ease-out 0.2s both;
+    }
+
+        .details-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .details-card:hover::before {
+            opacity: 1;
+            animation: shimmer 2s infinite linear;
+        }
+
+    /* Grille de détails */
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    /* Section de détails */
+    .detail-section {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        transition: var(--transition);
+        animation: fadeInUp 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+        .detail-section:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .detail-section:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .detail-section:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+        .detail-section:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+
+        .detail-section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+
+    .detail-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    }
+
+        .detail-header i {
+            font-size: 1.75rem;
+            color: var(--primary);
+            background: var(--primary-light);
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .detail-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 0;
+        }
+
+    /* Éléments de détail */
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: var(--secondary);
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .detail-label i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+    .detail-value {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--dark);
+        text-align: right;
+    }
+
+    /* Statistiques */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2.5rem 0;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
+        border: 2px solid;
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        text-align: center;
+        transition: var(--transition);
+        animation: slideIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+        .stat-card:nth-child(1) {
+            animation-delay: 0.7s;
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+
+        .stat-card:nth-child(2) {
+            animation-delay: 0.8s;
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .stat-card:nth-child(3) {
+            animation-delay: 0.9s;
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            margin: 0.5rem 0;
+        }
+
+        .stat-card .stat-label {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+    /* Barre de progression du stock */
+    .stock-progress {
+        background: rgba(0, 0, 0, 0.05);
+        height: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+
+    .stock-fill {
+        height: 100%;
+        border-radius: 5px;
+        transition: width 1s ease;
+    }
+
+    .stock-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.5rem;
+    }
+
+    .stock-percentage {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .stock-status {
+        padding: 0.375rem 1rem;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    .status-danger {
+        background: linear-gradient(135deg, var(--danger-light), transparent);
+        color: var(--danger);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .status-warning {
+        background: linear-gradient(135deg, var(--warning-light), transparent);
+        color: var(--warning);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .status-success {
+        background: linear-gradient(135deg, var(--success-light), transparent);
+        color: var(--success);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    /* Boutons d'action */
+    .action-buttons {
+        display: flex;
+        gap: 1.25rem;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.8s ease-out 1s both;
+        opacity: 0;
+    }
+
+    .btn {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        min-width: 140px;
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 0.5px;
+    }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:hover::after {
+            animation: ripple 1s ease-out;
+        }
+
+    .btn-warning {
+        background: linear-gradient(135deg, var(--warning), var(--warning-hover));
+        color: white;
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+        flex: 1;
+    }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, var(--warning-hover), #b45309);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+            color: white;
+        }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, var(--secondary), var(--secondary-hover));
+        color: white;
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.2);
+        flex: 1;
+    }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--secondary-hover), #4a545b);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(108, 117, 125, 0.3);
+            color: white;
+        }
+
+    /* Responsive Design */
+    @@media (max-width: 992px) {
+        .container-main {
+            padding: 1.5rem;
+        }
+
+        .header-premium {
+            padding: 2rem;
+        }
+
+        .title-gradient {
+            font-size: 2rem;
+        }
+
+        .details-card {
+            padding: 2rem;
+        }
+
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .container-main {
+            padding: 1rem;
+        }
+
+        .header-premium {
+            padding: 1.5rem;
+        }
+
+        .title-gradient {
+            font-size: 1.75rem;
+        }
+
+        .details-card {
+            padding: 1.5rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        .stats-container {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .title-gradient {
+            font-size: 1.5rem;
+        }
+
+        .product-id-badge {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+        }
+    }
+
+    /* Animations */
+    @@keyframes floatBackground {
+        0% {
+            transform: translate(0, 0);
+        }
+
+        50% {
+            transform: translate(-20px, -20px);
+        }
+
+        100% {
+            transform: translate(0, 0);
+        }
+    }
+
+    @@keyframes gradientShift {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    @@keyframes expandWidth {
+        from {
+            transform: scaleX(0);
+        }
+
+        to {
+            transform: scaleX(1);
+        }
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes cardAppear {
+        0% {
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    @@keyframes ripple {
+        0% {
+            transform: scale(0, 0);
+            opacity: 0.5;
+        }
+
+        100% {
+            transform: scale(50, 50);
+            opacity: 0;
+        }
+    }
+
+    @@keyframes badgePulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: var(--shadow-md);
+        }
+
+        50% {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+    }
+
+    /* Badges */
+    .badge-pill {
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    .badge-primary {
+        background: linear-gradient(135deg, var(--primary-light), transparent);
+        color: var(--primary);
+        border: 1px solid rgba(79, 70, 229, 0.2);
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, var(--success-light), transparent);
+        color: var(--success);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .badge-warning {
+        background: linear-gradient(135deg, var(--warning-light), transparent);
+        color: var(--warning);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    /* Montants */
+    .amount {
+        font-weight: 800;
+        font-size: 1.25rem;
+    }
+
+    .amount-purchase {
+        color: var(--warning);
+    }
+
+    .amount-sale {
+        color: var(--success);
+    }
+
+    .amount-margin {
+        color: var(--info);
+    }
+</style>
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<div class="container-main">
+    <!-- En-tête Premium -->
+    <div class="header-premium mb-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-4">
+            <div>
+                <h1 class="title-gradient mb-3">
+                    <i class="bi bi-info-circle me-3"></i>Détails du Produit
+                </h1>
+                <div class="product-id-badge">
+                    <i class="bi bi-hash"></i>
+                    ID: @Model.Id
+                </div>
+            </div>
+            <div class="text-end">
+                <div class="badge-pill @(stockStatus == "danger" ? "status-danger" : stockStatus == "warning" ? "status-warning" : "status-success")">
+                    <i class="bi @(stockStatus == "danger" ? "bi-exclamation-triangle" : stockStatus == "warning" ? "bi-exclamation-circle" : "bi-check-circle") me-2"></i>
+                    Stock @(stockStatus == "danger" ? "Faible" : stockStatus == "warning" ? "Moyen" : "Bon")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carte de détails -->
+    <div class="details-card">
+        <!-- Nom du produit -->
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold mb-3" style="color: var(--dark);">
+                @Model.Name
+            </h2>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <span class="badge-pill badge-primary">
+                    <i class="bi bi-tag me-2"></i>@Model.Category?.Name
+                </span>
+                <span class="badge-pill badge-success">
+                    <i class="bi bi-truck me-2"></i>@Model.Supplier?.Name
+                </span>
+            </div>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <i class="bi bi-cash-coin text-primary"></i>
+                <div class="stat-value amount amount-purchase">@Model.PurchasePrice.ToString("N2") DH</div>
+                <div class="stat-label">Prix d'Achat</div>
+            </div>
+
+            <div class="stat-card">
+                <i class="bi bi-currency-dollar text-success"></i>
+                <div class="stat-value amount amount-sale">@Model.SalePrice.ToString("N2") DH</div>
+                <div class="stat-label">Prix de Vente</div>
+            </div>
+
+            <div class="stat-card">
+                <i class="bi bi-percent text-warning"></i>
+                <div class="stat-value amount amount-margin">@marginPercentage.ToString("F1")%</div>
+                <div class="stat-label">Marge</div>
+            </div>
+        </div>
+
+        <!-- Grille de détails -->
+        <div class="details-grid">
+            <!-- Informations Générales -->
+            <div class="detail-section">
+                <div class="detail-header">
+                    <i class="bi bi-info-circle"></i>
+                    <h3>Informations Générales</h3>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-hash"></i>ID
+                    </span>
+                    <span class="detail-value">@Model.Id</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-box"></i>Nom
+                    </span>
+                    <span class="detail-value">@Model.Name</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-tag"></i>Catégorie
+                    </span>
+                    <span class="detail-value">@Model.Category?.Name</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-truck"></i>Fournisseur
+                    </span>
+                    <span class="detail-value">@Model.Supplier?.Name</span>
+                </div>
+            </div>
+
+            <!-- Informations Financières -->
+            <div class="detail-section">
+                <div class="detail-header">
+                    <i class="bi bi-graph-up"></i>
+                    <h3>Informations Financières</h3>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-box-arrow-in-down"></i>Prix d'Achat
+                    </span>
+                    <span class="detail-value amount amount-purchase">@Model.PurchasePrice.ToString("N2") DH</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-box-arrow-up"></i>Prix de Vente
+                    </span>
+                    <span class="detail-value amount amount-sale">@Model.SalePrice.ToString("N2") DH</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-percent"></i>Marge
+                    </span>
+                    <span class="detail-value amount amount-margin">@marginPercentage.ToString("F1")%</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-cash-stack"></i>Valeur Stock
+                    </span>
+                    <span class="detail-value amount amount-sale">@((Model.Quantity * Model.SalePrice).ToString("N2")) DH</span>
+                </div>
+            </div>
+
+            <!-- Gestion du Stock -->
+            <div class="detail-section">
+                <div class="detail-header">
+                    <i class="bi bi-clipboard-data"></i>
+                    <h3>Gestion du Stock</h3>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-box-seam"></i>Quantité en Stock
+                    </span>
+                    <span class="detail-value fw-bold">@Model.Quantity unités</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-exclamation-triangle"></i>Stock Minimum
+                    </span>
+                    <span class="detail-value">@Model.MinimumStock unités</span>
+                </div>
+
+                <!-- Barre de progression du stock -->
+                <div class="mt-3">
+                    <div class="stock-progress">
+                        <div class="stock-fill @(stockStatus == "danger" ? "bg-danger" : stockStatus == "warning" ? "bg-warning" : "bg-success")"
+                             style="width: @(Math.Min(stockPercentage, 100))%"></div>
+                    </div>
+                    <div class="stock-info">
+                        <span class="stock-percentage">@Math.Min(stockPercentage, 100).ToString("F1")%</span>
+                        <span class="stock-status @(stockStatus == "danger" ? "status-danger" : stockStatus == "warning" ? "status-warning" : "status-success")">
+                            @(stockStatus == "danger" ? "Stock Faible" : stockStatus == "warning" ? "Stock Moyen" : "Stock Optimal")
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculs Rapides -->
+            <div class="detail-section">
+                <div class="detail-header">
+                    <i class="bi bi-calculator"></i>
+                    <h3>Calculs Rapides</h3>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-currency-exchange"></i>Bénéfice Unitaire
+                    </span>
+                    <span class="detail-value amount amount-success">@((Model.SalePrice - Model.PurchasePrice).ToString("N2")) DH</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-cash"></i>Bénéfice Total Potentiel
+                    </span>
+                    <span class="detail-value amount amount-success">@((Model.Quantity * (Model.SalePrice - Model.PurchasePrice)).ToString("N2")) DH</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-box-arrow-right"></i>Unités à Vendre
+                    </span>
+                    <span class="detail-value">@(Math.Max(Model.MinimumStock - Model.Quantity, 0)) unités</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="bi bi-clock-history"></i>Dernière Mise à Jour
+                    </span>
+                    <span class="detail-value">Aujourd'hui</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="action-buttons">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="bi bi-pencil-square"></i>
+                Modifier le Produit
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle"></i>
+                Retour à la Liste
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation des éléments au chargement
+        const sections = document.querySelectorAll('.detail-section, .stat-card');
+        sections.forEach((section, index) => {
+            section.style.animationDelay = `${index * 0.1}s`;
+        });
+
+        // Effet de survol sur les cartes
+        const detailSections = document.querySelectorAll('.detail-section');
+        detailSections.forEach(section => {
+            section.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px)';
+            });
+
+            section.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Animation des statistiques au scroll
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Animation de la barre de progression
+        const stockFill = document.querySelector('.stock-fill');
+        if (stockFill) {
+            setTimeout(() => {
+                const width = stockFill.style.width;
+                stockFill.style.width = '0';
+                setTimeout(() => {
+                    stockFill.style.width = width;
+                }, 300);
+            }, 500);
+        }
+    });
+</script>

@@ -1,0 +1,256 @@
+﻿@{
+    ViewData["Title"] = "Accès Refusé";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Gestion Stock</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Police Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .access-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid #f1f5f9;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+
+        .content-section {
+            padding: 2.5rem;
+        }
+
+        .icon-container {
+            background: rgba(255, 255, 255, 0.2);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 3rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 0.85rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            margin-top: 1.5rem;
+            font-size: 1rem;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+            }
+
+            .btn-primary:active {
+                transform: translateY(0);
+            }
+
+        .error-code {
+            font-size: 0.9rem;
+            color: #64748b;
+            background: #f8fafc;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Animation pour l'icône */
+        @@keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse-icon {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Animation pour le texte */
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* Animation pour le bouton */
+        @@keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .bounce-btn:hover {
+            animation: bounce 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="access-container fade-in-up">
+        <!-- En-tête avec icône -->
+        <div class="header-section">
+            <div class="icon-container pulse-icon">
+                <i class="fas fa-ban"></i>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Accès Refusé</h1>
+            <p class="text-red-100 opacity-90">Erreur d'autorisation</p>
+        </div>
+
+        <!-- Contenu -->
+        <div class="content-section">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+                Accès Restreint
+            </h2>
+
+            <p class="text-gray-600 mb-6 leading-relaxed">
+                Vous n'avez pas les permissions nécessaires pour accéder à cette page.
+                Cette zone est réservée aux utilisateurs autorisés.
+            </p>
+
+            <div class="mb-8">
+                <p class="text-gray-700 mb-4 font-medium">Solutions possibles :</p>
+                <ul class="text-left text-gray-600 space-y-2 max-w-md mx-auto">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span>Contactez votre administrateur pour obtenir les droits d'accès</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span>Assurez-vous d'être connecté avec le compte approprié</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span>Vérifiez que votre rôle utilisateur dispose des permissions nécessaires</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Bouton de retour -->
+            <a asp-controller="Home" asp-action="Index" class="btn-primary bounce-btn">
+                <i class="fas fa-home mr-2"></i>Retour à l'accueil
+            </a>
+
+            <!-- Code d'erreur optionnel -->
+            <div class="error-code">
+                <i class="fas fa-info-circle mr-2"></i>
+                Code d'erreur : 403 - Forbidden
+            </div>
+
+            <!-- Liens supplémentaires -->
+            <div class="mt-8 pt-6 border-t border-gray-100">
+                <div class="flex justify-center space-x-4">
+                    <a asp-controller="Account" asp-action="Login" class="text-sm text-indigo-600 hover:text-indigo-800 transition-colors">
+                        <i class="fas fa-sign-in-alt mr-1"></i>Se connecter avec un autre compte
+                    </a>
+                    <span class="text-gray-300">|</span>
+                    <a href="mailto:admin@gestion-stock.com" class="text-sm text-indigo-600 hover:text-indigo-800 transition-colors">
+                        <i class="fas fa-envelope mr-1"></i>Contacter le support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ajouter un effet de confetti visuel pour attirer l'attention
+            const container = document.querySelector('.access-container');
+
+            // Effet de secousse sur le titre après un délai
+            setTimeout(() => {
+                const icon = document.querySelector('.icon-container');
+                icon.style.animation = 'pulse 2s ease-in-out';
+            }, 1000);
+
+            // Ajouter un événement au bouton
+            const backButton = document.querySelector('.btn-primary');
+            if (backButton) {
+                backButton.addEventListener('click', function(e) {
+                    // Petite animation avant la redirection
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            }
+
+            // Message console pour le débogage
+            console.log('Accès refusé - Page 403 affichée');
+            console.log('User attempted to access a restricted resource');
+        });
+    </script>
+</body>
+</html>

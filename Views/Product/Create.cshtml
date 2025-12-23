@@ -1,0 +1,1046 @@
+﻿@model Gestion.Models.Product
+
+@{
+    ViewData["Title"] = "Nouveau Produit";
+}
+
+<!-- CSS Personnalisé Premium -->
+<style>
+    /* Variables de thème premium */
+    :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --primary-light: rgba(79, 70, 229, 0.1);
+        --secondary: #6b7280;
+        --secondary-hover: #4b5563;
+        --success: #10b981;
+        --success-hover: #0d966d;
+        --success-light: rgba(16, 185, 129, 0.1);
+        --warning: #f59e0b;
+        --warning-hover: #d97706;
+        --warning-light: rgba(245, 158, 11, 0.1);
+        --danger: #ef4444;
+        --danger-hover: #dc2626;
+        --danger-light: rgba(239, 68, 68, 0.1);
+        --info: #0ea5e9;
+        --info-hover: #0284c7;
+        --info-light: rgba(14, 165, 233, 0.1);
+        --dark: #1e293b;
+        --light: #f8fafc;
+        --card-bg: #ffffff;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        --shadow-xxl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        --radius-sm: 0.5rem;
+        --radius-md: 0.75rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.25rem;
+        --radius-2xl: 1.5rem;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Reset et styles généraux */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+        min-height: 100vh;
+        color: var(--dark);
+        overflow-x: hidden;
+    }
+
+        /* Effet de particules en arrière-plan */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(79, 70, 229, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(245, 158, 11, 0.03) 0%, transparent 50%);
+            z-index: -1;
+            animation: floatBackground 20s infinite linear;
+        }
+
+    .container-main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* En-tête premium */
+    .header-premium {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98));
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-xl);
+        padding: 2.5rem 3rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+        animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+        .header-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success), var(--warning));
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+    /* Titre principal avec gradient animé */
+    .title-gradient {
+        font-size: 2.5rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--primary), #8b5cf6, var(--success));
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradientShift 5s ease infinite;
+        letter-spacing: -0.025em;
+        position: relative;
+        display: inline-block;
+        margin-bottom: 0.5rem;
+    }
+
+        .title-gradient::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 2px;
+            animation: expandWidth 1s ease-out 0.5s forwards;
+            transform-origin: left;
+            transform: scaleX(0);
+        }
+
+    /* Sous-titre */
+    .subtitle {
+        color: var(--secondary);
+        font-size: 1.125rem;
+        font-weight: 400;
+        line-height: 1.6;
+        max-width: 600px;
+    }
+
+    /* Formulaire premium */
+    .form-card {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: var(--radius-xl);
+        padding: 3rem;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+        animation: cardAppear 0.6s ease-out 0.2s both;
+    }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .form-card:hover::before {
+            opacity: 1;
+            animation: shimmer 2s infinite linear;
+        }
+
+    /* Groupes de formulaire */
+    .form-group {
+        margin-bottom: 2rem;
+        position: relative;
+        animation: slideIn 0.5s ease-out forwards;
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+        .form-group:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+        .form-group:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+
+        .form-group:nth-child(5) {
+            animation-delay: 0.7s;
+        }
+
+        .form-group:nth-child(6) {
+            animation-delay: 0.8s;
+        }
+
+    /* Labels de formulaire */
+    .form-label {
+        display: block;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition);
+    }
+
+        .form-label:hover {
+            transform: translateX(5px);
+        }
+
+        .form-label::before {
+            font-size: 1.3rem;
+            transition: var(--transition);
+        }
+
+        .form-label[for="Name"]::before {
+            content: '📦';
+        }
+
+        .form-label[for="CategoryId"]::before {
+            content: '🏷️';
+        }
+
+        .form-label[for="SupplierId"]::before {
+            content: '🚚';
+        }
+
+        .form-label[for="PurchasePrice"]::before {
+            content: '💰';
+        }
+
+        .form-label[for="SalePrice"]::before {
+            content: '💵';
+        }
+
+        .form-label[for="Quantity"]::before {
+            content: '📊';
+        }
+
+        .form-label[for="MinimumStock"]::before {
+            content: '⚠️';
+        }
+
+    /* Champs de formulaire */
+    .form-control {
+        width: 100%;
+        padding: 1.125rem 1.5rem;
+        font-size: 1.1rem;
+        color: var(--dark);
+        background: rgba(248, 250, 252, 0.8);
+        border: 2px solid #e2e8f0;
+        border-radius: var(--radius-md);
+        transition: var(--transition);
+        font-family: inherit;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .form-control:hover {
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .form-control::placeholder {
+            color: #94a3b8;
+            opacity: 0.8;
+        }
+
+    /* Select personnalisé */
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234f46e5' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1.5rem center;
+        background-size: 16px 12px;
+        padding-right: 3.5rem;
+        cursor: pointer;
+    }
+
+    /* Messages de validation */
+    .text-danger {
+        display: block;
+        margin-top: 0.75rem;
+        font-size: 0.9rem;
+        color: var(--danger);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: shake 0.5s ease-in-out;
+        padding: 0.75rem;
+        background: rgba(239, 68, 68, 0.05);
+        border-radius: var(--radius-sm);
+        border-left: 3px solid var(--danger);
+    }
+
+        .text-danger::before {
+            content: '⚠️';
+            font-size: 1rem;
+        }
+
+    /* Boutons */
+    .button-group {
+        display: flex;
+        gap: 1.25rem;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.8s ease-out 0.9s both;
+    }
+
+    .btn {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        min-width: 140px;
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 0.5px;
+    }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:hover::after {
+            animation: ripple 1s ease-out;
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--success), var(--success-hover));
+        color: white;
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        flex: 1;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--success-hover), #0b845c);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, var(--secondary), var(--secondary-hover));
+        color: white;
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.2);
+        flex: 1;
+    }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--secondary-hover), #4a545b);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(108, 117, 125, 0.3);
+            color: white;
+        }
+
+    /* Grille responsive */
+    .row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Calcul de marge en temps réel */
+    .margin-calculator {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
+        border: 2px solid var(--success-border);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        animation: fadeInUp 0.6s ease-out 1s both;
+        opacity: 0;
+    }
+
+    .margin-display {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--success-light);
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .margin-label {
+        font-weight: 600;
+        color: var(--dark);
+    }
+
+    .margin-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--success);
+        animation: pulse 2s infinite;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 992px) {
+        .container-main {
+            padding: 1.5rem;
+        }
+
+        .header-premium {
+            padding: 2rem;
+        }
+
+        .title-gradient {
+            font-size: 2rem;
+        }
+
+        .form-card {
+            padding: 2rem;
+        }
+
+        .row {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .container-main {
+            padding: 1rem;
+        }
+
+        .header-premium {
+            padding: 1.5rem;
+        }
+
+        .title-gradient {
+            font-size: 1.75rem;
+        }
+
+        .form-card {
+            padding: 1.5rem;
+        }
+
+        .button-group {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        .form-label {
+            font-size: 1rem;
+        }
+
+        .form-control {
+            padding: 1rem;
+            font-size: 1rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .title-gradient {
+            font-size: 1.5rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+        }
+
+        .form-card {
+            padding: 1.25rem;
+        }
+    }
+
+    /* Animations */
+    @@keyframes floatBackground {
+        0% {
+            transform: translate(0, 0);
+        }
+
+        50% {
+            transform: translate(-20px, -20px);
+        }
+
+        100% {
+            transform: translate(0, 0);
+        }
+    }
+
+    @@keyframes gradientShift {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    @@keyframes expandWidth {
+        from {
+            transform: scaleX(0);
+        }
+
+        to {
+            transform: scaleX(1);
+        }
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes cardAppear {
+        0% {
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    @@keyframes shake {
+        0%, 100% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-8px);
+        }
+
+        75% {
+            transform: translateX(8px);
+        }
+    }
+
+    @@keyframes ripple {
+        0% {
+            transform: scale(0, 0);
+            opacity: 0.5;
+        }
+
+        100% {
+            transform: scale(50, 50);
+            opacity: 0;
+        }
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+    }
+
+    /* Validation */
+    .form-control.is-valid {
+        border-color: var(--success);
+        background: rgba(16, 185, 129, 0.05);
+    }
+
+    .form-control.is-invalid {
+        border-color: var(--danger);
+        background: rgba(239, 68, 68, 0.05);
+    }
+
+    /* Placeholder stylisé */
+    .form-control::placeholder {
+        color: #94a3b8;
+        font-style: italic;
+        font-weight: 400;
+    }
+
+    /* Helper text */
+    .form-text {
+        font-size: 0.875rem;
+        color: var(--secondary);
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .form-text i {
+            color: var(--info);
+        }
+
+    /* Loading state */
+    .btn.loading {
+        position: relative;
+        color: transparent;
+    }
+
+        .btn.loading::before {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<div class="container-main">
+    <div style="width: 100%; max-width: 800px;">
+        <!-- En-tête Premium -->
+        <div class="header-premium mb-5">
+            <h1 class="title-gradient mb-3">
+                <i class="bi bi-plus-circle me-3"></i>Créer un Nouveau Produit
+            </h1>
+            <p class="subtitle mb-0">
+                Remplissez les informations ci-dessous pour ajouter un nouveau produit à votre catalogue
+            </p>
+        </div>
+
+        <!-- Formulaire -->
+        <div class="form-card">
+            <form asp-action="Create" id="productForm">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 rounded-lg mb-4 p-3 d-flex align-items-center">
+                    <i class="bi bi-exclamation-triangle-fill me-3 fs-5"></i>
+                    <div class="small">Veuillez corriger les erreurs ci-dessous</div>
+                </div>
+
+                <!-- Nom du produit -->
+                <div class="form-group">
+                    <label asp-for="Name" class="form-label">Nom du produit</label>
+                    <input asp-for="Name"
+                           class="form-control"
+                           placeholder="Ex: Ordinateur Portable HP Pavilion"
+                           autocomplete="off"
+                           autofocus />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <div class="form-text">
+                        <i class="bi bi-info-circle"></i> Nom descriptif et unique pour votre produit
+                    </div>
+                </div>
+
+                <!-- Catégorie et Fournisseur -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="CategoryId" class="form-label">Catégorie</label>
+                            <select asp-for="CategoryId"
+                                    class="form-control"
+                                    asp-items="ViewBag.CategoryId">
+                                <option value="">-- Sélectionner une catégorie --</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="bi bi-tag"></i> Catégorie principale du produit
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="SupplierId" class="form-label">Fournisseur</label>
+                            <select asp-for="SupplierId"
+                                    class="form-control"
+                                    asp-items="ViewBag.SupplierId">
+                                <option value="">-- Sélectionner un fournisseur --</option>
+                            </select>
+                            <span asp-validation-for="SupplierId" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="bi bi-truck"></i> Source d'approvisionnement
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prix d'achat et de vente -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PurchasePrice" class="form-label">Prix d'achat (DH)</label>
+                            <input asp-for="PurchasePrice"
+                                   class="form-control"
+                                   type="number"
+                                   step="0.01"
+                                   placeholder="0.00"
+                                   id="purchasePrice" />
+                            <span asp-validation-for="PurchasePrice" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="bi bi-box-arrow-in-down"></i> Coût d'achat unitaire
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="SalePrice" class="form-label">Prix de vente (DH)</label>
+                            <input asp-for="SalePrice"
+                                   class="form-control"
+                                   type="number"
+                                   step="0.01"
+                                   placeholder="0.00"
+                                   id="salePrice" />
+                            <span asp-validation-for="SalePrice" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="bi bi-box-arrow-up"></i> Prix de vente unitaire
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calcul de marge -->
+                <div class="margin-calculator" id="marginCalculator" style="display: none;">
+                    <div class="margin-display">
+                        <span class="margin-label">Marge estimée :</span>
+                        <span class="margin-value" id="marginValue">0%</span>
+                    </div>
+                    <div class="form-text mt-2 text-center">
+                        <i class="bi bi-graph-up"></i> Marge = (Prix vente - Prix achat) / Prix achat × 100
+                    </div>
+                </div>
+
+                <!-- Stock et stock minimum -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Quantity" class="form-label">Quantité en stock</label>
+                            <input asp-for="Quantity"
+                                   class="form-control"
+                                   type="number"
+                                   placeholder="0"
+                                   id="quantity" />
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="bi bi-box"></i> Quantité disponible actuellement
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MinimumStock" class="form-label">Stock minimum</label>
+                            <input asp-for="MinimumStock"
+                                   class="form-control"
+                                   type="number"
+                                   placeholder="0"
+                                   id="minimumStock" />
+                            <span asp-validation-for="MinimumStock" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="bi bi-exclamation-triangle"></i> Seuil d'alerte pour réapprovisionnement
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Créer le Produit
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-circle"></i>
+                        Retour à la liste
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('productForm');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const purchasePriceInput = document.getElementById('purchasePrice');
+        const salePriceInput = document.getElementById('salePrice');
+        const marginCalculator = document.getElementById('marginCalculator');
+        const marginValue = document.getElementById('marginValue');
+        const quantityInput = document.getElementById('quantity');
+        const minimumStockInput = document.getElementById('minimumStock');
+
+        // Calcul de marge en temps réel
+        function calculateMargin() {
+            const purchasePrice = parseFloat(purchasePriceInput.value) || 0;
+            const salePrice = parseFloat(salePriceInput.value) || 0;
+
+            if (purchasePrice > 0 && salePrice > 0) {
+                const margin = ((salePrice - purchasePrice) / purchasePrice * 100);
+                marginValue.textContent = margin.toFixed(1) + '%';
+
+                // Afficher/colorer selon la marge
+                if (margin < 0) {
+                    marginValue.style.color = 'var(--danger)';
+                } else if (margin < 20) {
+                    marginValue.style.color = 'var(--warning)';
+                } else {
+                    marginValue.style.color = 'var(--success)';
+                }
+
+                marginCalculator.style.display = 'block';
+            } else {
+                marginCalculator.style.display = 'none';
+            }
+        }
+
+        // Écouter les changements de prix
+        if (purchasePriceInput && salePriceInput) {
+            purchasePriceInput.addEventListener('input', calculateMargin);
+            salePriceInput.addEventListener('input', calculateMargin);
+        }
+
+        // Validation en temps réel
+        const inputs = form.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                validateField(this);
+            });
+
+            input.addEventListener('input', function() {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+                clearFieldError(this);
+            });
+        });
+
+        function validateField(field) {
+            let isValid = true;
+
+            // Vérification du champ requis
+            if (field.hasAttribute('required') && field.value.trim() === '') {
+                showFieldError(field, 'Ce champ est requis');
+                isValid = false;
+            }
+
+            // Validation des nombres positifs
+            if ((field.type === 'number' || field.id.includes('Price') || field.id.includes('Quantity') || field.id.includes('Stock')) && field.value.trim() !== '') {
+                const value = parseFloat(field.value);
+                if (value < 0) {
+                    showFieldError(field, 'La valeur doit être positive');
+                    isValid = false;
+                }
+            }
+
+            // Validation spécifique pour le prix de vente vs prix d'achat
+            if (field.id === 'salePrice' && purchasePriceInput && purchasePriceInput.value.trim() !== '') {
+                const salePrice = parseFloat(field.value);
+                const purchasePrice = parseFloat(purchasePriceInput.value);
+                if (salePrice > 0 && purchasePrice > 0 && salePrice <= purchasePrice) {
+                    showFieldError(field, 'Le prix de vente doit être supérieur au prix d\'achat');
+                    isValid = false;
+                }
+            }
+
+            // Validation du stock minimum vs quantité
+            if (field.id === 'minimumStock' && quantityInput && quantityInput.value.trim() !== '') {
+                const minimumStock = parseFloat(field.value);
+                const quantity = parseFloat(quantityInput.value);
+                if (minimumStock > 0 && quantity > 0 && minimumStock > quantity) {
+                    showFieldError(field, 'Le stock minimum ne peut pas dépasser la quantité en stock');
+                    isValid = false;
+                }
+            }
+
+            // Si tout est valide
+            if (isValid) {
+                field.classList.add('is-valid');
+                field.classList.remove('is-invalid');
+                clearFieldError(field);
+            }
+
+            return isValid;
+        }
+
+        function showFieldError(field, message) {
+            field.classList.add('is-invalid');
+            field.classList.remove('is-valid');
+
+            // Trouver ou créer le message d'erreur
+            let errorElement = field.nextElementSibling;
+            if (errorElement && errorElement.classList.contains('text-danger')) {
+                errorElement.innerHTML = `<i class="bi bi-exclamation-circle me-1"></i> ${message}`;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        function clearFieldError(field) {
+            let errorElement = field.nextElementSibling;
+            if (errorElement && errorElement.classList.contains('text-danger')) {
+                errorElement.innerHTML = '';
+                errorElement.style.display = 'none';
+            }
+        }
+
+        // Animation sur le bouton d'envoi
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!validateField(input)) {
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+
+                // Animation de shake pour les champs invalides
+                const invalidFields = form.querySelectorAll('.is-invalid');
+                invalidFields.forEach(field => {
+                    field.style.animation = 'shake 0.5s ease-in-out';
+                    setTimeout(() => {
+                        field.style.animation = '';
+                    }, 500);
+                });
+
+                return;
+            }
+
+            // Animation de chargement
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            // Réinitialiser après 5 secondes (au cas où)
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }, 5000);
+        });
+
+        // Auto-focus sur le premier champ
+        setTimeout(() => {
+            const firstInput = form.querySelector('input');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        }, 300);
+    });
+</script>

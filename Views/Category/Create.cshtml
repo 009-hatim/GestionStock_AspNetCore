@@ -1,0 +1,447 @@
+﻿@model Gestion.Models.Category
+
+@{
+    ViewData["Title"] = "Nouvelle Catégorie";
+}
+
+<style>
+    /* Variables CSS */
+    :root {
+        --primary: #4361ee;
+        --primary-hover: #3a56d4;
+        --secondary: #6c757d;
+        --secondary-hover: #5a6268;
+        --background: #f8f9fa;
+        --card-bg: #ffffff;
+        --border: #e0e0e0;
+        --text-primary: #2d3748;
+        --text-secondary: #718096;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --radius: 12px;
+        --transition: all 0.3s ease;
+    }
+
+    /* Page Container */
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+        min-height: 100vh;
+        padding: 0;
+        margin: 0;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    .container {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Header */
+    .page-header {
+        margin-bottom: 2.5rem;
+        text-align: center;
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        background: linear-gradient(90deg, var(--primary), #7209b7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    /* Form Container */
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+    }
+
+    .form-card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 500px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        transition: var(--transition);
+        animation: slideUp 0.6s ease-out;
+    }
+
+    .form-card:hover {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+    }
+
+    /* Form Styling */
+    .form-group {
+        margin-bottom: 1.8rem;
+    }
+
+    .control-label {
+        display: block;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .control-label::before {
+        content: '📝';
+        font-size: 1.2rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        font-size: 1rem;
+        color: var(--text-primary);
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        transition: var(--transition);
+        font-family: inherit;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .form-control:hover {
+        border-color: #cbd5e0;
+    }
+
+    /* Validation Messages */
+    .text-danger {
+        display: block;
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+        color: #ef4444;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .text-danger::before {
+        content: '⚠️';
+        font-size: 0.9rem;
+    }
+
+    /* Button Group */
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+    }
+
+    /* Buttons */
+    input[type="submit"], .btn {
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-width: 120px;
+    }
+
+    input[type="submit"] {
+        background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+        color: white;
+        box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+    }
+
+    input[type="submit"]:hover {
+        background: linear-gradient(135deg, var(--primary-hover), #2d4bd4);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(67, 97, 238, 0.3);
+    }
+
+    input[type="submit"]:active {
+        transform: translateY(0);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, var(--secondary), var(--secondary-hover));
+        color: white;
+        box-shadow: 0 4px 12px rgba(108, 117, 125, 0.15);
+    }
+
+    .btn-secondary:hover {
+        background: linear-gradient(135deg, var(--secondary-hover), #4a545b);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(108, 117, 125, 0.25);
+        color: white;
+    }
+
+    /* Success State */
+    .form-control.valid {
+        border-color: #10b981;
+        background-color: rgba(16, 185, 129, 0.05);
+    }
+
+    /* Animations */
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-5px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(67, 97, 238, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(67, 97, 238, 0);
+        }
+    }
+
+    /* Loading Animation */
+    input[type="submit"].loading {
+        position: relative;
+        color: transparent;
+    }
+
+    input[type="submit"].loading::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2px solid white;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .container {
+            padding: 1.5rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+        }
+
+        .form-card {
+            padding: 2rem;
+        }
+
+        .button-group {
+            flex-direction: column;
+        }
+
+        input[type="submit"], .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .container {
+            padding: 1rem;
+        }
+
+        .form-card {
+            padding: 1.5rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+        }
+    }
+
+    /* Decorative Elements */
+    .form-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), #7209b7, #4361ee);
+        border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    /* Placeholder Styling */
+    .form-control::placeholder {
+        color: #a0aec0;
+        opacity: 0.7;
+    }
+
+    /* Focus Effect */
+    .form-control:focus {
+        animation: pulse 2s infinite;
+    }
+
+    /* Form Validation Animation */
+    .text-danger {
+        animation: shake 0.5s ease-in-out;
+    }
+
+    @@keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+</style>
+
+<div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Créer une Catégorie</h1>
+        <p class="page-subtitle">Ajoutez une nouvelle catégorie pour organiser vos produits efficacement</p>
+    </div>
+
+    <!-- Form Container -->
+    <div class="form-container">
+        <div class="form-card">
+            <form asp-action="Create" id="categoryForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label">Nom de la catégorie</label>
+                    <input asp-for="Name" 
+                           class="form-control" 
+                           placeholder="Ex: Électronique, Vêtements, Alimentation..." 
+                           autocomplete="off" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                
+                <div class="button-group">
+                    <input type="submit" value="Créer" class="btn-primary" />
+                    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('categoryForm');
+        const submitBtn = form.querySelector('input[type="submit"]');
+        const nameInput = document.querySelector('[asp-for="Name"]');
+        
+        // Auto-focus on name input
+        if (nameInput) {
+            setTimeout(() => {
+                nameInput.focus();
+            }, 300);
+        }
+        
+        // Real-time validation
+        if (nameInput) {
+            nameInput.addEventListener('input', function() {
+                validateField(this);
+            });
+            
+            nameInput.addEventListener('blur', function() {
+                validateField(this, true);
+            });
+        }
+        
+        function validateField(field, showError = false) {
+            const errorSpan = field.nextElementSibling;
+            
+            if (field.value.trim().length === 0) {
+                if (showError) {
+                    field.style.borderColor = '#ef4444';
+                    field.classList.remove('valid');
+                }
+                return false;
+            }
+            
+            if (field.value.trim().length < 2) {
+                if (showError) {
+                    field.style.borderColor = '#ef4444';
+                    field.classList.remove('valid');
+                }
+                return false;
+            }
+            
+            // Valid
+            field.style.borderColor = '#10b981';
+            field.classList.add('valid');
+            return true;
+        }
+        
+        // Form submission enhancement
+        form.addEventListener('submit', function(e) {
+            // Validate before submit
+            if (!validateField(nameInput, true)) {
+                e.preventDefault();
+                return;
+            }
+            
+            // Add loading animation
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            
+            // Reset after 3 seconds (in case of error)
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }, 3000);
+        });
+        
+        // Add animation to form elements
+        const formElements = form.querySelectorAll('.form-group, .button-group');
+        formElements.forEach((element, index) => {
+            element.style.animationDelay = `${index * 0.1}s`;
+        });
+    });
+</script>

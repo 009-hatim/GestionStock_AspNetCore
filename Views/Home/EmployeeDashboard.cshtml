@@ -1,0 +1,802 @@
+﻿@model DashboardViewModel
+@{
+    ViewData["Title"] = "Tableau de Bord - Employé";
+}
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<!-- Animate.css -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+<style>
+    :root {
+        --primary: #3b82f6;
+        --primary-light: #60a5fa;
+        --primary-dark: #2563eb;
+        --danger: #ef4444;
+        --danger-light: #fca5a5;
+        --danger-dark: #dc2626;
+        --warning: #f59e0b;
+        --warning-light: #fcd34d;
+        --warning-dark: #d97706;
+        --success: #10b981;
+        --success-light: #34d399;
+        --success-dark: #059669;
+        --info: #06b6d4;
+        --info-light: #67e8f9;
+        --info-dark: #0891b2;
+        --dark: #1e293b;
+        --light: #f8fafc;
+        --gray: #64748b;
+        --gray-light: #e2e8f0;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    }
+
+    .dashboard-employee {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: calc(100vh - 200px);
+        padding: 2rem 0;
+    }
+
+    /* Welcome Banner */
+    .welcome-banner {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: white;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-xl);
+    }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+        }
+
+    @@keyframes shimmer {
+        0% {
+            background-position: -200% 0;
+        }
+
+        100% {
+            background-position: 200% 0;
+        }
+    }
+
+    .welcome-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(to right, #ffffff, #e0e7ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .welcome-subtitle {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+    .stat-card-primary::before {
+        background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    }
+
+    .stat-card-danger::before {
+        background: linear-gradient(90deg, var(--danger), var(--danger-dark));
+    }
+
+    .stat-card-warning::before {
+        background: linear-gradient(90deg, var(--warning), var(--warning-dark));
+    }
+
+    .stat-card-success::before {
+        background: linear-gradient(90deg, var(--success), var(--success-dark));
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 0.5rem 0;
+        background: linear-gradient(135deg, var(--dark), var(--gray));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+        font-size: 0.95rem;
+        color: var(--gray);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-icon-primary {
+        background: linear-gradient(135deg, var(--primary-light), var(--primary));
+        color: white;
+    }
+
+    .stat-icon-danger {
+        background: linear-gradient(135deg, var(--danger-light), var(--danger));
+        color: white;
+    }
+
+    .stat-icon-warning {
+        background: linear-gradient(135deg, var(--warning-light), var(--warning));
+        color: white;
+    }
+
+    .stat-icon-success {
+        background: linear-gradient(135deg, var(--success-light), var(--success));
+        color: white;
+    }
+
+    /* Alert Cards */
+    .alert-section {
+        margin: 2rem 0;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-bottom: 0.5rem;
+    }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            border-radius: 2px;
+        }
+
+    .alerts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .alert-card {
+        border-radius: 16px;
+        padding: 1.5rem;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        border: none;
+        display: block;
+    }
+
+        .alert-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .alert-card:hover::before {
+            left: 100%;
+        }
+
+        .alert-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: var(--shadow-xl);
+        }
+
+    .alert-danger {
+        background: linear-gradient(135deg, var(--danger), var(--danger-dark));
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, var(--warning), var(--warning-dark));
+    }
+
+    .alert-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .alert-number {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .alert-text {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .alert-subtext {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    .alert-icon {
+        font-size: 3rem;
+        opacity: 0.8;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+        margin: 2rem 0;
+    }
+
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .action-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: var(--shadow);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid var(--gray-light);
+    }
+
+        .action-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+    .action-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--primary-light), var(--primary));
+        color: white;
+        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+    }
+
+    .action-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.75rem;
+    }
+
+    .action-description {
+        color: var(--gray);
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .action-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        width: 100%;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, var(--success), var(--success-dark));
+        color: white;
+    }
+
+    .btn-info {
+        background: linear-gradient(135deg, var(--info), var(--info-dark));
+        color: white;
+    }
+
+    .action-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Quick Navigation */
+    .quick-nav {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+    }
+
+    .nav-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .nav-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .nav-button-primary {
+        background: var(--primary);
+        color: white;
+    }
+
+    .nav-button-danger {
+        background: var(--danger);
+        color: white;
+    }
+
+    .nav-button-warning {
+        background: var(--warning);
+        color: white;
+    }
+
+    .nav-button-info {
+        background: var(--info);
+        color: white;
+    }
+
+    .nav-button-secondary {
+        background: var(--gray);
+        color: white;
+    }
+
+    .nav-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Animations */
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+    @@keyframes fadeIn {
+        to {
+            opacity: 1;
+        }
+    }
+
+    .animate-slide-up {
+        animation: slideUp 0.6s ease-out forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    @@keyframes slideUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .dashboard-employee {
+            padding: 1rem;
+        }
+
+        .welcome-banner {
+            padding: 1.5rem;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .alerts-grid,
+        .actions-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .nav-buttons {
+            flex-direction: column;
+        }
+
+        .nav-button {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    /* Role Badge */
+    .role-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    /* Progress Ring */
+    .progress-ring {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 40px;
+        height: 40px;
+    }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 4;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+</style>
+
+<div class="dashboard-employee">
+    <div class="container">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner animate__animated animate__fadeIn">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="welcome-title">Bienvenue, Employé !</h1>
+                    <p class="welcome-subtitle mb-0">Accédez aux fonctionnalités disponibles pour votre rôle</p>
+                    <div class="role-badge animate__animated animate__pulse animate__infinite">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Accès limité - Employé</span>
+                    </div>
+                </div>
+                <div class="d-none d-md-block">
+                    <i class="fas fa-user-tie fa-4x" style="opacity: 0.8;"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card stat-card-primary animate-slide-up" style="animation-delay: 0.1s;">
+                <div class="stat-icon stat-icon-primary">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="stat-number">@Model.TotalProducts</div>
+                <div class="stat-label">Produits Totaux</div>
+                <p class="text-muted mb-0 small">Tous les produits en stock</p>
+            </div>
+
+            <div class="stat-card stat-card-danger animate-slide-up" style="animation-delay: 0.2s;">
+                <div class="stat-icon stat-icon-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-number">@Model.OutOfStockProducts</div>
+                <div class="stat-label">Rupture de Stock</div>
+                <p class="text-muted mb-0 small">Nécessite attention urgente</p>
+            </div>
+
+            <div class="stat-card stat-card-warning animate-slide-up" style="animation-delay: 0.3s;">
+                <div class="stat-icon stat-icon-warning">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="stat-number">@Model.LowStockProducts</div>
+                <div class="stat-label">Stock Faible</div>
+                <p class="text-muted mb-0 small">À surveiller</p>
+            </div>
+
+            <div class="stat-card stat-card-success animate-slide-up" style="animation-delay: 0.4s;">
+                <div class="stat-icon stat-icon-success">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="stat-number">@Model.TotalSuppliers</div>
+                <div class="stat-label">Fournisseurs</div>
+                <p class="text-muted mb-0 small">Partenaires actifs</p>
+            </div>
+        </div>
+
+        <!-- Stock Alerts -->
+        <div class="alert-section">
+            <h3 class="section-title animate-fade-in">📊 Alertes Stock</h3>
+            <div class="alerts-grid">
+                <a asp-controller="Product" asp-action="OutOfStock" class="alert-card alert-danger animate-slide-up" style="animation-delay: 0.2s;">
+                    <div class="alert-content">
+                        <div>
+                            <div class="alert-number">@Model.OutOfStockProducts</div>
+                            <div class="alert-text">Produits en rupture de stock</div>
+                            <div class="alert-subtext">Cliquez pour gérer</div>
+                        </div>
+                        <div class="alert-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                    <div class="progress-ring">
+                        <svg viewBox="0 0 36 36">
+                            <circle cx="18" cy="18" r="16" stroke="rgba(255,255,255,0.3)" stroke-width="4" fill="none" />
+                            <circle cx="18" cy="18" r="16" stroke="white" stroke-width="4" fill="none"
+                                    stroke-dasharray="100" stroke-dashoffset="@(100 - Math.Min(Model.OutOfStockProducts * 10, 100))" />
+                        </svg>
+                    </div>
+                </a>
+
+                <a asp-controller="Product" asp-action="LowStock" class="alert-card alert-warning animate-slide-up" style="animation-delay: 0.3s;">
+                    <div class="alert-content">
+                        <div>
+                            <div class="alert-number">@Model.LowStockProducts</div>
+                            <div class="alert-text">Produits à stock faible</div>
+                            <div class="alert-subtext">Cliquez pour vérifier</div>
+                        </div>
+                        <div class="alert-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                    </div>
+                    <div class="progress-ring">
+                        <svg viewBox="0 0 36 36">
+                            <circle cx="18" cy="18" r="16" stroke="rgba(255,255,255,0.3)" stroke-width="4" fill="none" />
+                            <circle cx="18" cy="18" r="16" stroke="white" stroke-width="4" fill="none"
+                                    stroke-dasharray="100" stroke-dashoffset="@(100 - Math.Min(Model.LowStockProducts * 5, 100))" />
+                        </svg>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h3 class="section-title animate-fade-in">🚀 Actions Rapides</h3>
+            <div class="actions-grid">
+                <div class="action-card animate-slide-up" style="animation-delay: 0.2s;">
+                    <div class="action-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <h4 class="action-title">Gérer les Produits</h4>
+                    <p class="action-description">Consultez, recherchez et gérez tous les produits du stock</p>
+                    <a class="action-button btn-primary" href="/Product">
+                        <i class="fas fa-arrow-right me-2"></i>
+                        Accéder aux Produits
+                    </a>
+                </div>
+
+                <div class="action-card animate-slide-up" style="animation-delay: 0.3s;">
+                    <div class="action-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <h4 class="action-title">Ajouter un Produit</h4>
+                    <p class="action-description">Ajoutez un nouveau produit au système de gestion</p>
+                    <a class="action-button btn-success" href="/Product/Create">
+                        <i class="fas fa-plus me-2"></i>
+                        Nouveau Produit
+                    </a>
+                </div>
+
+                <div class="action-card animate-slide-up" style="animation-delay: 0.4s;">
+                    <div class="action-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h4 class="action-title">Fournisseurs</h4>
+                    <p class="action-description">Consultez la liste de vos fournisseurs partenaires</p>
+                    <a class="action-button btn-info" href="/Supplier">
+                        <i class="fas fa-list me-2"></i>
+                        Voir Fournisseurs
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Navigation -->
+        <div class="quick-nav animate__animated animate__fadeInUp">
+            <h4 class="section-title mb-3">🔗 Navigation Rapide</h4>
+            <div class="nav-buttons">
+                <a class="nav-button nav-button-primary animate-fade-in" style="animation-delay: 0.1s;" href="/Product">
+                    <i class="fas fa-box-seam me-2"></i>
+                    Tous les Produits
+                </a>
+                <a class="nav-button nav-button-danger animate-fade-in" style="animation-delay: 0.2s;" href="/Product/OutOfStock">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Rupture de Stock
+                </a>
+                <a class="nav-button nav-button-warning animate-fade-in" style="animation-delay: 0.3s;" href="/Product/LowStock">
+                    <i class="fas fa-exclamation-triangle-fill me-2"></i>
+                    Stock Faible
+                </a>
+                <a class="nav-button nav-button-info animate-fade-in" style="animation-delay: 0.4s;" href="/Supplier">
+                    <i class="fas fa-truck me-2"></i>
+                    Fournisseurs
+                </a>
+                <a class="nav-button nav-button-secondary animate-fade-in" style="animation-delay: 0.5s;" href="/Category">
+                    <i class="fas fa-tags me-2"></i>
+                    Catégories
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animate-slide-up elements
+        document.querySelectorAll('.animate-slide-up').forEach((el) => {
+            observer.observe(el);
+        });
+
+        // Add hover sound effects (optional)
+        const interactiveElements = document.querySelectorAll('.stat-card, .alert-card, .action-card, .nav-button');
+
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                this.style.transition = 'all 0.3s ease';
+            });
+
+            // Add ripple effect to buttons
+            if (element.tagName === 'A' || element.tagName === 'BUTTON') {
+                element.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const ripple = document.createElement('span');
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+
+                    ripple.style.cssText = `
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(255, 255, 255, 0.4);
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        pointer-events: none;
+                    `;
+
+                    this.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            }
+        });
+
+        // Update progress rings
+        function updateProgressRings() {
+            document.querySelectorAll('.progress-ring circle').forEach(circle => {
+                const length = circle.getTotalLength();
+                circle.style.strokeDasharray = length;
+                circle.style.strokeDashoffset = length;
+            });
+        }
+
+        // Initialize progress rings after a delay
+        setTimeout(updateProgressRings, 500);
+
+        // Add CSS for ripple animation
+        if (!document.querySelector('#ripple-style')) {
+            const style = document.createElement('style');
+            style.id = 'ripple-style';
+            style.textContent = `
+                @@keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Role badge animation
+        const roleBadge = document.querySelector('.role-badge');
+        if (roleBadge) {
+            setInterval(() => {
+                roleBadge.classList.toggle('animate__pulse');
+            }, 3000);
+        }
+    });
+</script>

@@ -1,0 +1,734 @@
+﻿@model Gestion.Models.Category
+
+@{
+    ViewData["Title"] = "Supprimer Catégorie";
+}
+
+<style>
+    /* Variables CSS - Thème suppression */
+    :root {
+        --danger-color: #ef4444;
+        --danger-hover: #dc2626;
+        --danger-light: rgba(239, 68, 68, 0.1);
+        --danger-border: rgba(239, 68, 68, 0.2);
+        --warning-color: #f59e0b;
+        --secondary-color: #6b7280;
+        --secondary-hover: #4b5563;
+        --card-bg: #ffffff;
+        --border-color: #e5e7eb;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-danger: 0 10px 15px -3px rgba(239, 68, 68, 0.1);
+        --radius-md: 10px;
+        --radius-lg: 16px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Page Container */
+    body {
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .container {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+    }
+
+    /* Header Styling */
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--danger-color);
+        margin-bottom: 0.5rem;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 0.75rem;
+        text-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
+        animation: slideInDown 0.5s ease-out;
+    }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--danger-color), #f97316);
+            border-radius: 2px;
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: expandLine 0.8s ease-out 0.3s forwards;
+        }
+
+    /* Warning Message */
+    h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 1.5rem 0;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.04));
+        border-radius: var(--radius-md);
+        border-left: 4px solid var(--danger-color);
+        animation: warningPulse 2s infinite ease-in-out;
+        position: relative;
+        overflow: hidden;
+    }
+
+        h3::before {
+            content: '⚠️';
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            opacity: 0.2;
+        }
+
+    hr {
+        margin: 2rem 0;
+        border: none;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--danger-border), transparent);
+        animation: fadeIn 0.8s ease-out 0.4s forwards;
+        opacity: 0;
+    }
+
+    /* Warning Card */
+    .warning-card {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(239, 68, 68, 0.02));
+        border: 2px solid var(--danger-border);
+        border-radius: var(--radius-lg);
+        padding: 2.5rem;
+        margin: 2rem 0;
+        box-shadow: var(--shadow-danger);
+        animation: fadeInUp 0.6s ease-out 0.2s forwards;
+        opacity: 0;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+
+        .warning-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--danger-color), #f97316);
+            animation: dangerShimmer 3s infinite linear;
+        }
+
+    /* Warning Icon */
+    .warning-icon {
+        text-align: center;
+        margin-bottom: 2rem;
+        animation: shake 0.5s ease-in-out 0.5s;
+    }
+
+        .warning-icon i {
+            font-size: 4rem;
+            color: var(--danger-color);
+            filter: drop-shadow(0 4px 6px rgba(239, 68, 68, 0.2));
+        }
+
+    /* Details Styling */
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: -0.75rem;
+        animation: fadeIn 0.8s ease-out 0.3s forwards;
+        opacity: 0;
+    }
+
+    dt {
+        flex: 0 0 25%;
+        max-width: 25%;
+        padding: 0.75rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 1rem;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition);
+    }
+
+        dt::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--danger-color);
+            border-radius: 50%;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        dt:hover {
+            color: var(--danger-color);
+            transform: translateX(5px);
+        }
+
+    dd {
+        flex: 0 0 75%;
+        max-width: 75%;
+        padding: 0.75rem;
+        margin: 0;
+        font-size: 1.1rem;
+        color: var(--text-primary);
+        font-weight: 600;
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), transparent);
+        border-radius: var(--radius-md);
+        padding: 1rem 1.5rem;
+        border: 2px solid var(--danger-border);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+        dd::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--danger-color);
+            border-radius: 2px 0 0 2px;
+        }
+
+        dd:hover {
+            transform: translateX(-5px);
+            box-shadow: var(--shadow-sm);
+        }
+
+    /* Form Styling */
+    form {
+        margin-top: 2.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--danger-border);
+        display: flex;
+        gap: 1rem;
+        animation: slideInUp 0.6s ease-out 0.4s forwards;
+        opacity: 0;
+    }
+
+    input[type="hidden"] {
+        display: none;
+    }
+
+    /* Button Styling */
+    input[type="submit"], .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+        min-width: 140px;
+    }
+
+        input[type="submit"]::before, .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        input[type="submit"]:hover::before, .btn:hover::before {
+            left: 100%;
+        }
+
+    /* Danger Button */
+    input[type="submit"] {
+        background: linear-gradient(135deg, var(--danger-color), var(--danger-hover));
+        color: white;
+        box-shadow: var(--shadow-md);
+        animation: dangerPulse 2s infinite;
+    }
+
+        input[type="submit"]:hover {
+            background: linear-gradient(135deg, var(--danger-hover), #b91c1c);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        input[type="submit"]:active {
+            transform: translateY(0);
+            animation: none;
+        }
+
+    /* Secondary Button */
+    .btn-secondary {
+        background: linear-gradient(135deg, var(--secondary-color), var(--secondary-hover));
+        color: white;
+        box-shadow: var(--shadow-sm);
+    }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--secondary-hover), #4a545b);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+
+    /* Warning Banner */
+    .warning-banner {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+        border: 1px solid var(--danger-border);
+        border-radius: var(--radius-md);
+        padding: 1rem 1.5rem;
+        margin: 1.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        animation: slideInRight 0.5s ease-out 0.3s forwards;
+        opacity: 0;
+    }
+
+        .warning-banner i {
+            color: var(--danger-color);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .warning-banner p {
+            margin: 0;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+    /* Animations */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes expandLine {
+        from {
+            transform: scaleX(0);
+        }
+
+        to {
+            transform: scaleX(1);
+        }
+    }
+
+    @@keyframes dangerShimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    @@keyframes warningPulse {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.1);
+        }
+
+        50% {
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+        }
+    }
+
+    @@keyframes dangerPulse {
+        0%, 100% {
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+
+        50% {
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+        }
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+    }
+
+    @@keyframes shake {
+        0%, 100% {
+            transform: translateX(0) rotate(0);
+        }
+
+        25% {
+            transform: translateX(-5px) rotate(-2deg);
+        }
+
+        75% {
+            transform: translateX(5px) rotate(2deg);
+        }
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .container {
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            padding: 1.25rem;
+        }
+
+        .warning-card {
+            padding: 2rem;
+        }
+
+        .row {
+            flex-direction: column;
+        }
+
+        dt, dd {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        dt {
+            margin-bottom: 0.5rem;
+        }
+
+        dd {
+            margin-bottom: 1.5rem;
+        }
+
+            dd::before {
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                border-radius: 2px 2px 0 0;
+            }
+
+        form {
+            flex-direction: column;
+        }
+
+        input[type="submit"], .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .warning-icon i {
+            font-size: 3rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .container {
+            padding: 1rem;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        .warning-card {
+            padding: 1.5rem;
+        }
+
+        h3::before {
+            display: none;
+        }
+    }
+
+    /* Confirmation Check */
+    .confirmation-check {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), transparent);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--danger-border);
+    }
+
+        .confirmation-check input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--danger-color);
+        }
+
+        .confirmation-check label {
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+    /* Loading Animation */
+    input[type="submit"].loading {
+        position: relative;
+        color: transparent;
+    }
+
+        input[type="submit"].loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+<div class="container">
+    <div>
+        <h1><i class="bi bi-trash3-fill me-2"></i>Supprimer la Catégorie</h1>
+
+        <div class="warning-card">
+            <!-- Warning Icon -->
+            <div class="warning-icon">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+
+            <h3>Êtes-vous sûr de vouloir supprimer cette catégorie?</h3>
+
+            <!-- Warning Banner -->
+            <div class="warning-banner">
+                <i class="bi bi-exclamation-octagon"></i>
+                <p><strong>Attention :</strong> Cette action est irréversible. Tous les produits associés à cette catégorie devront être réaffectés.</p>
+            </div>
+
+            <hr />
+
+            <!-- Details Section -->
+            <div class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Id)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Id)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+            </div>
+
+            <!-- Confirmation Check (Optional) -->
+            <div class="confirmation-check">
+                <input type="checkbox" id="confirmDelete" required>
+                <label for="confirmDelete">Je confirme vouloir supprimer définitivement cette catégorie</label>
+            </div>
+
+            <!-- Form -->
+            <form asp-action="Delete" id="deleteForm">
+                <input type="hidden" asp-for="Id" />
+                <input type="submit" value="Supprimer Définitivement" class="btn-danger" id="deleteBtn" disabled />
+                <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteForm = document.getElementById('deleteForm');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const confirmCheckbox = document.getElementById('confirmDelete');
+
+        // Enable/disable delete button based on checkbox
+        if (confirmCheckbox) {
+            confirmCheckbox.addEventListener('change', function() {
+                deleteBtn.disabled = !this.checked;
+                if (this.checked) {
+                    deleteBtn.style.animation = 'dangerPulse 1.5s infinite';
+                } else {
+                    deleteBtn.style.animation = 'none';
+                }
+            });
+        }
+
+        // Form submission - REMPLACER LA CONFIRMATION PAR DÉFAUT
+            deleteForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (confirmCheckbox && !confirmCheckbox.checked) {
+            confirmCheckbox.parentElement.style.animation = 'shake 0.5s ease-in-out';
+            setTimeout(() => {
+                confirmCheckbox.parentElement.style.animation = '';
+            }, 500);
+
+            alert('Veuillez confirmer la suppression en cochant la case.');
+            return;
+        }
+
+        // PAS DE POPUP - suppression directe
+        deleteBtn.classList.add('loading');
+        deleteBtn.disabled = true;
+
+        setTimeout(() => {
+            this.submit();
+        }, 1000);
+    });
+
+
+        // Add hover effect to warning card
+        const warningCard = document.querySelector('.warning-card');
+        if (warningCard) {
+            warningCard.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 20px 40px rgba(239, 68, 68, 0.15)';
+            });
+
+            warningCard.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.boxShadow = 'var(--shadow-danger)';
+            });
+        }
+
+        // Add ripple effect to delete button
+        deleteBtn.addEventListener('click', function(e) {
+            if (this.disabled) return;
+
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const ripple = document.createElement('span');
+            ripple.style.cssText = `
+                position: absolute;
+                top: ${y}px;
+                left: ${x}px;
+                width: 0;
+                height: 0;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.4);
+                transform: translate(-50%, -50%);
+                pointer-events: none;
+            `;
+
+            this.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.style.width = '300px';
+                ripple.style.height = '300px';
+                ripple.style.opacity = '0';
+            }, 10);
+
+            setTimeout(() => ripple.remove(), 600);
+        });
+
+        // Add animation to form elements
+        const formElements = deleteForm.querySelectorAll('input, .btn');
+        formElements.forEach((element, index) => {
+            element.style.animationDelay = `${index * 0.1}s`;
+        });
+
+        // Auto-focus on checkbox for accessibility
+        setTimeout(() => {
+            if (confirmCheckbox) {
+                confirmCheckbox.focus();
+            }
+        }, 500);
+    });
+</script>

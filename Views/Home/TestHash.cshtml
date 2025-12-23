@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Hash Test";
+}
+
+<h1>Password Hash Test</h1>
+
+<dl>
+    <dt>Password:</dt>
+    <dd>@ViewBag.Password</dd>
+
+    <dt>Direct Hash:</dt>
+    <dd>@ViewBag.DirectHash</dd>
+
+    <dt>Helper Hash:</dt>
+    <dd>@ViewBag.HelperHash</dd>
+
+    <dt>Expected Hash:</dt>
+    <dd>@ViewBag.ExpectedHash</dd>
+
+    <dt>Hashes Match:</dt>
+    <dd style="color: @(ViewBag.Match ? "green" : "red")">@ViewBag.Match</dd>
+
+    <dt>Matches Expected:</dt>
+    <dd style="color: @(ViewBag.MatchesExpected ? "green" : "red")">@ViewBag.MatchesExpected</dd>
+</dl>

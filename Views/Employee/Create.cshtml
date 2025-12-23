@@ -1,0 +1,343 @@
+﻿@model Gestion.Models.User
+
+@{
+    ViewData["Title"] = "Ajouter un Employé";
+}
+
+<!-- Restructuration avec conteneur professionnel et design moderne -->
+<div class="employee-form-container">
+    <div class="form-wrapper">
+        <!-- En-tête du formulaire -->
+        <div class="form-header">
+            <h2 class="form-title">Ajouter un Employé</h2>
+            <p class="form-subtitle">Remplissez les informations pour créer un nouveau compte employé</p>
+        </div>
+
+        <!-- Messages de succès/erreur -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-custom">
+                <span class="alert-icon">✓</span>
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        <!-- Formulaire -->
+        <form method="post" asp-action="Create" class="employee-form">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <!-- Groupe de champs -->
+            <div class="form-fields-group">
+
+                <!-- Nom d'utilisateur -->
+                <div class="form-field">
+                    <label asp-for="Username" class="form-label">
+                        <span class="label-text">Nom d'utilisateur</span>
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input asp-for="Username" class="form-input" placeholder="Ex: jean.dupont" />
+                    </div>
+                    <span asp-validation-for="Username" class="error-message"></span>
+                </div>
+
+                <!-- Email -->
+                <div class="form-field">
+                    <label asp-for="Email" class="form-label">
+                        <span class="label-text">Email</span>
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input asp-for="Email" class="form-input" placeholder="Ex: jean.dupont@entreprise.fr" />
+                    </div>
+                    <span asp-validation-for="Email" class="error-message"></span>
+                </div>
+
+                <!-- Mot de passe -->
+                <div class="form-field">
+                    <label for="password" class="form-label">
+                        <span class="label-text">Mot de passe</span>
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" name="password" class="form-input" placeholder="Entrez un mot de passe sécurisé" required />
+                    </div>
+                    <span class="error-message field-validation-valid" data-valmsg-for="password" data-valmsg-replace="true"></span>
+                </div>
+
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <span class="btn-icon">+</span>
+                    Créer l'employé
+                </button>
+                <a class="btn btn-secondary" asp-action="Index">
+                    <span class="btn-icon">←</span>
+                    Retour
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- Styles personnalisés pour le formulaire professionnel -->
+    <style>
+        /* Conteneur principal */
+        .employee-form-container {
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-wrapper {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            max-width: 500px;
+            width: 100%;
+            padding: 3rem 2rem;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @@keyframes slideIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* En-tête */
+        .form-header {
+            margin-bottom: 2rem;
+            text-align: center;
+            border-bottom: 2px solid #e8ebf0;
+            padding-bottom: 1.5rem;
+        }
+
+        .form-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -0.5px;
+        }
+
+        .form-subtitle {
+            font-size: 0.95rem;
+            color: #718096;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Messages d'alerte */
+        .alert-custom {
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            background: #ecfdf5;
+            border-left: 4px solid #10b981;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #065f46;
+            font-size: 0.95rem;
+        }
+
+        .alert-icon {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Validation summary */
+        .validation-summary {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            color: #7f1d1d;
+            font-size: 0.9rem;
+        }
+
+        /* Groupement des champs */
+        .form-fields-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Champ individuel */
+        .form-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Label */
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.6rem;
+            cursor: pointer;
+        }
+
+        .label-text {
+            flex: 1;
+        }
+
+        .required {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        /* Input wrapper */
+        .input-wrapper {
+            position: relative;
+        }
+
+        /* Champs de saisie */
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            background: white;
+            transition: all 0.2s ease;
+            color: #2d3748;
+        }
+
+            .form-input::placeholder {
+                color: #a0aec0;
+            }
+
+            .form-input:focus {
+                outline: none;
+                border-color: #3b82f6;
+                background: #f8faff;
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            }
+
+            .form-input:hover:not(:focus) {
+                border-color: #a0aec0;
+            }
+
+        /* Messages d'erreur */
+        .error-message {
+            font-size: 0.8rem;
+            color: #dc2626;
+            margin-top: 0.35rem;
+            display: block;
+            min-height: 1.2rem;
+        }
+
+        .field-validation-valid {
+            display: none;
+        }
+
+        /* Actions */
+        .form-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* Boutons */
+        .btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            }
+
+            .btn-primary:active {
+                transform: translateY(0);
+            }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #4b5563;
+            border: 1.5px solid #e5e7eb;
+        }
+
+            .btn-secondary:hover {
+                background: #e5e7eb;
+                border-color: #d1d5db;
+            }
+
+        .btn-icon {
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @@media (max-width: 640px) {
+            .form-wrapper
+
+        {
+            padding: 2rem 1.5rem;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            min-width: unset;
+        }
+
+        }
+    </style>
+}

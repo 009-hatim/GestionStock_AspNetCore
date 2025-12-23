@@ -1,0 +1,11 @@
+.vs/
+.idea/
+bin/
+obj/
+node_modules/
+
+*.user
+*.suo
+*.vsidx
+tailwindcss.exe
+

@@ -1,0 +1,829 @@
+﻿@model IEnumerable<Gestion.Models.Product>
+
+@{
+    ViewData["Title"] = "Produits";
+}
+
+<!-- CSS Personnalisé Premium -->
+<style>
+    /* Variables de thème premium */
+    :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --primary-light: rgba(79, 70, 229, 0.1);
+        --secondary: #6b7280;
+        --secondary-hover: #4b5563;
+        --success: #10b981;
+        --success-hover: #0d966d;
+        --success-light: rgba(16, 185, 129, 0.1);
+        --warning: #f59e0b;
+        --warning-hover: #d97706;
+        --warning-light: rgba(245, 158, 11, 0.1);
+        --danger: #ef4444;
+        --danger-hover: #dc2626;
+        --danger-light: rgba(239, 68, 68, 0.1);
+        --info: #0ea5e9;
+        --info-hover: #0284c7;
+        --info-light: rgba(14, 165, 233, 0.1);
+        --dark: #1e293b;
+        --light: #f8fafc;
+        --card-bg: #ffffff;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        --shadow-xxl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        --radius-sm: 0.5rem;
+        --radius-md: 0.75rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.25rem;
+        --radius-2xl: 1.5rem;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Reset et styles généraux */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+        min-height: 100vh;
+        color: var(--dark);
+        overflow-x: hidden;
+    }
+
+        /* Effet de particules en arrière-plan */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(79, 70, 229, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(245, 158, 11, 0.03) 0%, transparent 50%);
+            z-index: -1;
+            animation: floatBackground 20s infinite linear;
+        }
+
+    /* Container principal */
+    .container-main {
+        max-width: 1920px;
+        margin: 0 auto;
+        padding: 1.5rem;
+    }
+
+    /* En-tête premium */
+    .header-premium {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98));
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-xl);
+        padding: 2.5rem 3rem;
+        margin-bottom: 2.5rem;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+        animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+        .header-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success), var(--warning));
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+    /* Titre principal avec gradient animé */
+    .title-gradient {
+        font-size: 2.75rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--primary), #8b5cf6, var(--success));
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradientShift 5s ease infinite;
+        letter-spacing: -0.025em;
+        position: relative;
+        display: inline-block;
+    }
+
+        .title-gradient::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 2px;
+            animation: expandWidth 1s ease-out 0.5s forwards;
+            transform-origin: left;
+            transform: scaleX(0);
+        }
+
+    /* Bouton "Nouveau Produit" premium */
+    .btn-premium {
+        background: linear-gradient(135deg, var(--success), var(--success-hover));
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: var(--radius-lg);
+        font-weight: 700;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition);
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+    }
+
+        .btn-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+            color: white;
+        }
+
+            .btn-premium:hover::before {
+                left: 100%;
+            }
+
+    /* Carte produit premium */
+    .product-card {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: var(--radius-xl);
+        padding: 2rem;
+        height: 100%;
+        transition: var(--transition-slow);
+        box-shadow: var(--shadow-md);
+        position: relative;
+        overflow: hidden;
+        animation: cardAppear 0.6s ease-out;
+        animation-fill-mode: both;
+    }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-xxl);
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+
+            .product-card:hover::before {
+                opacity: 1;
+                animation: shimmer 2s infinite linear;
+            }
+
+        .product-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .product-card .product-id {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--secondary);
+            background: var(--light);
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .product-card .product-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-card .product-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-card .category-badge {
+            background: linear-gradient(135deg, var(--primary-light), transparent);
+            color: var(--primary);
+            font-weight: 600;
+            padding: 0.375rem 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .product-card .supplier-badge {
+            background: linear-gradient(135deg, var(--info-light), transparent);
+            color: var(--info);
+            font-weight: 600;
+            padding: 0.375rem 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .product-card .price-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .product-card .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+    .price-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .product-card .price-label {
+        font-size: 0.875rem;
+        color: var(--secondary);
+        font-weight: 500;
+    }
+
+    .product-card .price-value {
+        font-weight: 700;
+        font-size: 1.125rem;
+    }
+
+    .product-card .purchase-price {
+        color: var(--warning);
+    }
+
+    .product-card .sale-price {
+        color: var(--success);
+    }
+
+    .product-card .margin-badge {
+        background: linear-gradient(135deg, var(--success-light), transparent);
+        color: var(--success);
+        font-weight: 700;
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .product-card .stock-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .product-card .stock-info {
+        flex: 1;
+    }
+
+    .product-card .stock-value {
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin-bottom: 0.25rem;
+        display: block;
+    }
+
+    .product-card .stock-label {
+        font-size: 0.875rem;
+        color: var(--secondary);
+    }
+
+    .product-card .stock-bar {
+        height: 8px;
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 0.75rem 0;
+    }
+
+    .product-card .stock-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 1s ease;
+    }
+
+    .product-card .stock-status {
+        font-size: 0.875rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--radius-sm);
+    }
+
+    .product-card .stock-good {
+        background: linear-gradient(135deg, var(--success-light), transparent);
+        color: var(--success);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .product-card .stock-warning {
+        background: linear-gradient(135deg, var(--warning-light), transparent);
+        color: var(--warning);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .product-card .stock-danger {
+        background: linear-gradient(135deg, var(--danger-light), transparent);
+        color: var(--danger);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .product-card .actions-section {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .product-card .action-btn {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+    }
+
+    .action-btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .action-btn:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .action-btn i {
+        font-size: 1rem;
+    }
+
+    .product-card .btn-edit {
+        background: linear-gradient(135deg, var(--warning), var(--warning-hover));
+        color: white;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+    }
+
+    .btn-edit:hover {
+        background: linear-gradient(135deg, var(--warning-hover), #b45309);
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+        color: white;
+    }
+
+    .product-card .btn-details {
+        background: linear-gradient(135deg, var(--info), var(--info-hover));
+        color: white;
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+    }
+
+    .btn-details:hover {
+        background: linear-gradient(135deg, var(--info-hover), #0369a1);
+        box-shadow: 0 6px 20px rgba(14, 165, 233, 0.3);
+        color: white;
+    }
+
+    .product-card .btn-delete {
+        background: linear-gradient(135deg, var(--danger), var(--danger-hover));
+        color: white;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-delete:hover {
+        background: linear-gradient(135deg, var(--danger-hover), #b91c1c);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+        color: white;
+    }
+
+    /* Grid des produits */
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    /* Recherche */
+    .search-box {
+        position: relative;
+        max-width: 400px;
+    }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+            .search-box input:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary);
+            font-size: 1.25rem;
+        }
+
+    /* Message vide */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.75rem;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .empty-state p {
+            color: var(--secondary);
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+        }
+
+    /* Animations */
+    @@keyframes floatBackground {
+        0% {
+            transform: translate(0, 0);
+        }
+
+        50% {
+            transform: translate(-20px, -20px);
+        }
+
+        100% {
+            transform: translate(0, 0);
+        }
+    }
+
+    @@keyframes gradientShift {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    @@keyframes expandWidth {
+        from {
+            transform: scaleX(0);
+        }
+
+        to {
+            transform: scaleX(1);
+        }
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes cardAppear {
+        0% {
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @@keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 1200px) {
+        .products-grid {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .container-main {
+            padding: 1rem;
+        }
+
+        .header-premium {
+            padding: 1.5rem;
+        }
+
+        .title-gradient {
+            font-size: 2rem;
+        }
+
+        .products-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .product-card .actions-section {
+            flex-direction: column;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .title-gradient {
+            font-size: 1.75rem;
+        }
+
+        .product-card {
+            padding: 1.5rem;
+        }
+
+            .product-card .product-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+    }
+</style>
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<div class="container-main">
+    <!-- En-tête Premium -->
+    <div class="header-premium">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-4">
+            <div>
+                <h1 class="title-gradient mb-3">
+                    <i class="bi bi-box-seam me-3"></i>Gestion des Produits
+                </h1>
+                <a asp-action="Create" class="btn-premium">
+                    <i class="bi bi-plus-circle"></i>
+                    Nouveau Produit
+                </a>
+            </div>
+            <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Rechercher un produit..." id="productSearch">
+            </div>
+        </div>
+    </div>
+
+    <!-- Grille des Produits -->
+    <div class="products-grid" id="productsContainer">
+        @foreach (var item in Model)
+        {
+            var stockPercentage = (item.Quantity * 100) / Math.Max(item.MinimumStock * 3, 1);
+            var stockStatus = stockPercentage <= 33 ? "danger" : stockPercentage <= 66 ? "warning" : "good";
+            var marginPercentage = ((item.SalePrice - item.PurchasePrice) / item.PurchasePrice * 100);
+
+            <div class="product-card"
+                 data-name="@item.Name.ToLower()"
+                 data-category="@item.Category?.Name?.ToLower()"
+                 data-stock="@stockStatus"
+                 data-margin="@marginPercentage">
+
+                <!-- En-tête de la carte -->
+                <div class="card-header">
+                    <span class="product-id">#@item.Id</span>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary border-0" type="button"
+                                data-bs-toggle="dropdown">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil me-2"></i>Modifier</a></li>
+                            <li><a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye me-2"></i>Détails</a></li>
+                            <li><a class="dropdown-item text-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash me-2"></i>Supprimer</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Nom du produit -->
+                <h3 class="product-name">@item.Name</h3>
+
+                <!-- Catégorie et Fournisseur -->
+                <div class="product-meta">
+                    <span class="category-badge">
+                        <i class="bi bi-tag"></i>@item.Category?.Name
+                    </span>
+                    <span class="supplier-badge">
+                        <i class="bi bi-truck"></i>@item.Supplier?.Name
+                    </span>
+                </div>
+
+                <!-- Section Prix -->
+                <div class="price-section">
+                    <div class="price-row">
+                        <span class="price-label">Prix d'Achat</span>
+                        <span class="price-value purchase-price">@item.PurchasePrice.ToString("N2") DH</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">Prix de Vente</span>
+                        <span class="price-value sale-price">@item.SalePrice.ToString("N2") DH</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">Marge</span>
+                        <span class="margin-badge">@marginPercentage.ToString("F1")%</span>
+                    </div>
+                </div>
+
+                <!-- Section Stock -->
+                <div class="stock-section">
+                    <div class="stock-info">
+                        <span class="stock-value">@item.Quantity</span>
+                        <span class="stock-label">En stock / Min: @item.MinimumStock</span>
+                        <div class="stock-bar">
+                            <div class="stock-fill @(stockStatus == "danger" ? "bg-danger" : stockStatus == "warning" ? "bg-warning" : "bg-success")"
+                                 style="width: @(Math.Min(stockPercentage, 100))%"></div>
+                        </div>
+                    </div>
+                    <span class="stock-status @(stockStatus == "danger" ? "stock-danger" : stockStatus == "warning" ? "stock-warning" : "stock-good")">
+                        @(stockStatus == "danger" ? "Faible" : stockStatus == "warning" ? "Moyen" : "Bon")
+                    </span>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions-section">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="action-btn btn-edit">
+                        <i class="bi bi-pencil-square"></i>
+                        Modifier
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="action-btn btn-details">
+                        <i class="bi bi-info-circle"></i>
+                        Détails
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="action-btn btn-delete">
+                        <i class="bi bi-trash"></i>
+                        Supprimer
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Message si aucun produit -->
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-box"></i>
+            <h3 class="mt-4 mb-3">Aucun produit trouvé</h3>
+            <p class="text-muted mb-4">Commencez par ajouter votre premier produit</p>
+            <a asp-action="Create" class="btn-premium">
+                <i class="bi bi-plus-circle"></i>
+                Ajouter un produit
+            </a>
+        </div>
+    }
+</div>
+
+<!-- Scripts JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('productSearch');
+        const productCards = document.querySelectorAll('.product-card');
+
+        // Recherche en temps réel
+        if (searchInput && productCards.length > 0) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+
+                productCards.forEach(card => {
+                    const productName = card.dataset.name;
+                    const productCategory = card.dataset.category;
+
+                    if (productName.includes(searchTerm) || productCategory.includes(searchTerm)) {
+                        card.style.display = 'block';
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0) scale(1)';
+                        }, 10);
+                    } else {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(20px) scale(0.95)';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        }
+
+        // Animation au survol des cartes
+        productCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.zIndex = '10';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.zIndex = '1';
+            });
+        });
+    });
+</script>ipt>

@@ -1,0 +1,540 @@
+﻿@model Gestion.Models.Category
+
+@{
+    ViewData["Title"] = "Détails Catégorie";
+}
+
+<style>
+    /* Variables CSS dynamiques */
+    :root {
+        --primary-color: #3b82f6;
+        --primary-hover: #2563eb;
+        --warning-color: #f59e0b;
+        --warning-hover: #d97706;
+        --secondary-color: #6b7280;
+        --secondary-hover: #4b5563;
+        --success-color: #10b981;
+        --info-color: #06b6d4;
+        --card-bg: #ffffff;
+        --border-color: #e5e7eb;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --radius-md: 10px;
+        --radius-lg: 15px;
+        --transition: all 0.3s ease;
+    }
+
+    /* Page Container */
+    body {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    .container {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Header Styling */
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 0.5rem;
+        background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: slideInDown 0.5s ease-out;
+    }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+            border-radius: 2px;
+        }
+
+    hr {
+        margin: 2rem 0;
+        border: none;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+        opacity: 0.5;
+    }
+
+    /* Card Container */
+    .details-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        padding: 2.5rem;
+        margin: 2rem 0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        animation: fadeInUp 0.6s ease-out;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .details-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+            animation: shimmer 3s infinite linear;
+        }
+
+    /* DL Row Styling */
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: -0.75rem;
+        animation: fadeIn 0.8s ease-out 0.2s forwards;
+        opacity: 0;
+    }
+
+    dt {
+        flex: 0 0 25%;
+        max-width: 25%;
+        padding: 0.75rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 1rem;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition);
+    }
+
+        dt::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        dt:hover {
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+    dd {
+        flex: 0 0 75%;
+        max-width: 75%;
+        padding: 0.75rem;
+        margin: 0;
+        font-size: 1.1rem;
+        color: var(--text-primary);
+        font-weight: 500;
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-radius: var(--radius-md);
+        padding: 1rem 1.5rem;
+        border: 2px solid transparent;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+        dd::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 2px 0 0 2px;
+        }
+
+        dd:hover {
+            transform: translateX(-5px);
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+    /* Button Container */
+    div:last-child {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border-color);
+        animation: slideInUp 0.6s ease-out 0.4s forwards;
+        opacity: 0;
+    }
+
+    /* Button Styling */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        min-width: 160px;
+    }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+    .btn-warning {
+        background: linear-gradient(135deg, var(--warning-color), var(--warning-hover));
+        color: white;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+    }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(245, 158, 11, 0.3);
+            color: white;
+        }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, var(--secondary-color), var(--secondary-hover));
+        color: white;
+        box-shadow: 0 4px 12px rgba(107, 114, 128, 0.15);
+    }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(107, 114, 128, 0.25);
+            color: white;
+        }
+
+    /* Add icons to buttons */
+    .btn-warning::after {
+        content: '✏️';
+        font-size: 1.1rem;
+    }
+
+    .btn-secondary::after {
+        content: '←';
+        font-size: 1.2rem;
+    }
+
+    /* Animations */
+    @@ fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .container {
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        .details-card {
+            padding: 1.5rem;
+        }
+
+        .row {
+            flex-direction: column;
+        }
+
+        dt, dd {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        dt {
+            margin-bottom: 0.5rem;
+        }
+
+        dd {
+            margin-bottom: 1.5rem;
+        }
+
+            dd::before {
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                border-radius: 2px 2px 0 0;
+            }
+
+        div:last-child {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .container {
+            padding: 1rem;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        .details-card {
+            padding: 1.25rem;
+        }
+    }
+
+    /* Status Indicators */
+    .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        margin-left: 1rem;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--success-color);
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+    }
+
+    /* Hover Effects Enhancement */
+    dt:hover::before {
+        animation: pulse 1s infinite;
+    }
+
+    .btn:hover {
+        letter-spacing: 0.5px;
+    }
+
+    /* Floating Effect */
+    .details-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<div class="container">
+    <h1>Détails de la Catégorie</h1>
+
+    <div class="details-card">
+        <div class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Id)
+                <span class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span>ID Unique</span>
+                </span>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Id)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Modifier</a>
+        <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add staggered animation to dt/dd pairs
+        const dtElements = document.querySelectorAll('dt');
+        const ddElements = document.querySelectorAll('dd');
+
+        dtElements.forEach((dt, index) => {
+            dt.style.animationDelay = `${index * 0.1 + 0.2}s`;
+            dt.style.animation = 'fadeIn 0.5s ease-out forwards';
+        });
+
+        ddElements.forEach((dd, index) => {
+            dd.style.animationDelay = `${index * 0.1 + 0.25}s`;
+            dd.style.animation = 'fadeIn 0.5s ease-out forwards';
+        });
+
+        // Add hover effect enhancement
+        const detailsItems = document.querySelectorAll('dt, dd');
+        detailsItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                const sibling = this.tagName === 'DT'
+                    ? this.nextElementSibling
+                    : this.previousElementSibling;
+
+                if (sibling) {
+                    sibling.style.transform = this.tagName === 'DT'
+                        ? 'translateX(-10px)'
+                        : 'translateX(10px)';
+                }
+            });
+
+            item.addEventListener('mouseleave', function() {
+                const sibling = this.tagName === 'DT'
+                    ? this.nextElementSibling
+                    : this.previousElementSibling;
+
+                if (sibling) {
+                    sibling.style.transform = '';
+                }
+            });
+        });
+
+        // Add ripple effect to buttons
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const ripple = document.createElement('span');
+                ripple.style.cssText = `
+                    position: absolute;
+                    top: ${y}px;
+                    left: ${x}px;
+                    width: 0;
+                    height: 0;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.4);
+                    transform: translate(-50%, -50%);
+                    pointer-events: none;
+                `;
+
+                this.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.style.width = '300px';
+                    ripple.style.height = '300px';
+                    ripple.style.opacity = '0';
+                }, 10);
+
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Add floating effect to card on scroll
+        const detailsCard = document.querySelector('.details-card');
+        window.addEventListener('scroll', function() {
+            if (detailsCard) {
+                const scrolled = window.pageYOffset;
+                const rate = scrolled * -0.1;
+                detailsCard.style.transform = `translateY(${rate}px)`;
+            }
+        });
+    });
+</script>

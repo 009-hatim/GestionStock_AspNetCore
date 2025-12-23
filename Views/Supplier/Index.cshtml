@@ -1,0 +1,1015 @@
+﻿@model IEnumerable<Gestion.Models.Supplier>
+
+@{
+    ViewData["Title"] = "Fournisseurs";
+}
+
+<style>
+    /* Variables CSS - Thème moderne */
+    :root {
+        --primary: #3b82f6;
+        --primary-hover: #2563eb;
+        --primary-light: rgba(59, 130, 246, 0.1);
+        --secondary: #6b7280;
+        --secondary-hover: #4b5563;
+        --success: #10b981;
+        --success-hover: #059669;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #06b6d4;
+        --background: #f8fafc;
+        --surface: #ffffff;
+        --card-bg: #ffffff;
+        --border: #e2e8f0;
+        --border-light: #f1f5f9;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --text-muted: #94a3b8;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        --radius-sm: 0.375rem;
+        --radius: 0.5rem;
+        --radius-md: 0.75rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --glass-bg: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Animations */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    @@keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+        }
+
+        50% {
+            box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+        }
+    }
+
+    @@keyframes cardAppear {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Styles de base */
+    body {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
+            z-index: -1;
+        }
+
+    /* Container principal */
+    .container {
+        padding: 1.5rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    /* Header */
+    .page-header {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-md);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        animation: slideInDown 0.5s ease-out;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            animation: shimmer 3s infinite linear;
+            background-size: 1000px 100%;
+        }
+
+    h1 {
+        color: var(--text-primary);
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .page-description {
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+    }
+
+    /* Section filtres */
+    .filters-section {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        animation: fadeIn 0.6s ease-out 0.2s forwards;
+        opacity: 0;
+    }
+
+    .filters-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .filters-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .filter-group {
+        position: relative;
+    }
+
+    .filter-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .filter-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        padding-left: 2.5rem;
+        font-size: 0.95rem;
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text-primary);
+        transition: var(--transition);
+    }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+    .filter-icon {
+        position: absolute;
+        left: 1rem;
+        top: 2.5rem;
+        color: var(--text-muted);
+        pointer-events: none;
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-end;
+    }
+
+    /* Statistiques */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, var(--primary-light), transparent);
+        border-radius: var(--radius-md);
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: var(--transition);
+        border: 1px solid var(--border-light);
+        animation: fadeIn 0.6s ease-out;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .stat-info h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    .stat-info p {
+        color: var(--text-secondary);
+        margin: 0;
+        font-size: 0.875rem;
+    }
+
+    /* Grille de cartes */
+    .suppliers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .supplier-card {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        animation: cardAppear 0.6s ease-out;
+        position: relative;
+        border: 1px solid var(--border);
+    }
+
+        .supplier-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .supplier-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+        }
+
+    .card-header {
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-bottom: 1px solid var(--border-light);
+    }
+
+    .supplier-id {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .supplier-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .supplier-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .info-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius);
+        background: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        flex-shrink: 0;
+    }
+
+    .info-content {
+        flex: 1;
+    }
+
+    .info-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        word-break: break-word;
+    }
+
+    .card-footer {
+        padding: 1.5rem;
+        background: #f8fafc;
+        border-top: 1px solid var(--border-light);
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    /* Boutons */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.625rem 1.25rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: var(--radius);
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+        color: white;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+            color: white;
+        }
+
+    .btn-success {
+        background: linear-gradient(135deg, var(--success), var(--success-hover));
+        color: white;
+        animation: pulse 2s infinite;
+    }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .btn-warning {
+        background: linear-gradient(135deg, var(--warning), #d97706);
+        color: white;
+    }
+
+    .btn-info {
+        background: linear-gradient(135deg, var(--info), #0891b2);
+        color: white;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, var(--danger), #dc2626);
+        color: white;
+    }
+
+    .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.8125rem;
+    }
+
+    .btn-action {
+        flex: 1;
+        min-width: 80px;
+        justify-content: center;
+    }
+
+    /* Bouton flottant */
+    .floating-action-btn {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--success), var(--success-hover));
+        color: white;
+        border: none;
+        box-shadow: var(--shadow-xl);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        transition: var(--transition);
+        z-index: 100;
+        animation: float 3s ease-in-out infinite;
+    }
+
+        .floating-action-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4);
+        }
+
+    /* État vide */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        border: 2px dashed var(--border);
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+    }
+
+    /* Contrôles de tri */
+    .sort-controls {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .sort-btn {
+        padding: 0.5rem 1rem;
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text-secondary);
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+        .sort-btn:hover, .sort-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+
+    .page-item {
+        list-style: none;
+    }
+
+    .page-link {
+        padding: 0.5rem 1rem;
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: var(--transition);
+        display: block;
+    }
+
+        .page-link:hover, .page-item.active .page-link {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+
+        .filters-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-actions {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .suppliers-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-container {
+            grid-template-columns: 1fr;
+        }
+
+        .floating-action-btn {
+            bottom: 1rem;
+            right: 1rem;
+        }
+    }
+
+    /* Transition pour les cartes */
+    .supplier-card {
+        animation: cardAppear 0.3s ease-out;
+    }
+</style>
+
+<!-- Intégration des icônes Bootstrap -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+<div class="container">
+    <!-- En-tête de page -->
+    <div class="page-header">
+        <h1>
+            <i class="bi bi-people-fill" style="color: var(--primary);"></i>
+            Gestion des Fournisseurs
+        </h1>
+        <p class="page-description">
+            Gérez vos fournisseurs, visualisez les informations et effectuez des opérations rapidement
+        </p>
+        <button type="button" class="btn btn-success" onclick="location.href='@Url.Action("Create")'">
+            <i class="bi bi-plus-circle me-2"></i>
+            Nouveau Fournisseur
+        </button>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--primary);">
+                <i class="bi bi-buildings"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="totalSuppliers">@Model.Count()</h3>
+                <p>Fournisseurs au total</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">
+                <i class="bi bi-telephone"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="validPhones">@Model.Count(s => !string.IsNullOrEmpty(s.Phone))</h3>
+                <p>Avec téléphone</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
+                <i class="bi bi-clock-history"></i>
+            </div>
+            <div class="stat-info">
+                <h3>@DateTime.Now.ToString("dd/MM/yyyy")</h3>
+                <p>Mis à jour aujourd'hui</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Filtres -->
+    <div class="filters-section">
+        <div class="filters-header">
+            <h3 class="filters-title">
+                <i class="bi bi-funnel-fill"></i>
+                Filtres et Recherche
+            </h3>
+            <button id="resetFilters" class="btn btn-secondary btn-sm">
+                <i class="bi bi-arrow-clockwise"></i>
+                Réinitialiser
+            </button>
+        </div>
+
+        <div class="filters-grid">
+            <div class="filter-group">
+                <label class="filter-label">
+                    <i class="bi bi-search me-1"></i>
+                    Recherche par nom
+                </label>
+                <i class="bi bi-search filter-icon"></i>
+                <input type="text"
+                       id="searchName"
+                       class="filter-input"
+                       placeholder="Nom du fournisseur..."
+                       onkeyup="filterSuppliers()">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">
+                    <i class="bi bi-telephone me-1"></i>
+                    Recherche par téléphone
+                </label>
+                <i class="bi bi-telephone filter-icon"></i>
+                <input type="text"
+                       id="searchPhone"
+                       class="filter-input"
+                       placeholder="Numéro de téléphone..."
+                       onkeyup="filterSuppliers()">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">
+                    <i class="bi bi-sort-alpha-down me-1"></i>
+                    Trier par
+                </label>
+                <i class="bi bi-sort-down filter-icon"></i>
+                <select id="sortBy" class="filter-input" onchange="filterSuppliers()">
+                    <option value="name_asc">Nom (A-Z)</option>
+                    <option value="name_desc">Nom (Z-A)</option>
+                    <option value="id_asc">ID (Croissant)</option>
+                    <option value="id_desc">ID (Décroissant)</option>
+                </select>
+            </div>
+        </div>
+        <div class="filter-actions">
+            <button class="btn btn-success" onclick="exportData('csv')">
+                <i class="bi bi-download me-2"></i>
+                Exporter CSV
+            </button>
+        </div>
+    </div>
+
+    <!-- Contrôles de tri visuel -->
+    <div class="sort-controls">
+        <span style="color: var(--text-secondary); font-weight: 500;">Vue :</span>
+        <button class="sort-btn active" onclick="changeView('grid')">
+            <i class="bi bi-grid-3x3-gap"></i> Grille
+        </button>
+        <button class="sort-btn" onclick="changeView('list')">
+            <i class="bi bi-list-ul"></i> Liste
+        </button>
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 0.5rem;">
+            <span id="resultsCount" style="color: var(--text-secondary); font-weight: 500;">
+                @Model.Count() résultats
+            </span>
+        </div>
+    </div>
+
+    <!-- Grille de cartes des fournisseurs -->
+    <div class="suppliers-grid" id="suppliersGrid">
+        @foreach (var item in Model)
+        {
+            <div class="supplier-card"
+                 data-name="@item.Name.ToLower()"
+                 data-phone="@item.Phone"
+                 data-id="@item.Id">
+                <div class="card-header">
+                    <div class="supplier-id">ID: #@item.Id</div>
+                    <h3 class="supplier-name">
+                        <i class="bi bi-building"></i>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </h3>
+                </div>
+
+                <div class="card-body">
+                    <div class="supplier-info">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="bi bi-telephone"></i>
+                            </div>
+                            <div class="info-content">
+                                <div class="info-label">Téléphone</div>
+                                <div class="info-value phone-value">
+                                    @if (!string.IsNullOrEmpty(item.Phone))
+                                    {
+                                        @Html.DisplayFor(modelItem => item.Phone)
+                                    }
+                                    else
+                                    {
+                                        <span style="color: var(--text-muted);">Non renseigné</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="bi bi-calendar"></i>
+                            </div>
+                            <div class="info-content">
+                                <div class="info-label">Créé le</div>
+                                <div class="info-value" style="color: var(--text-secondary);">
+                                    @DateTime.Now.ToString("dd/MM/yyyy")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-action btn-sm">
+                        <i class="bi bi-pencil-square"></i> Modifier
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-action btn-sm">
+                        <i class="bi bi-eye"></i> Détails
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-action btn-sm">
+                        <i class="bi bi-trash"></i> Supprimer
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- État vide -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">
+            <i class="bi bi-people"></i>
+        </div>
+        <h3 style="color: var(--text-secondary); margin-bottom: 1rem;">
+            Aucun fournisseur trouvé
+        </h3>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">
+            Aucun fournisseur ne correspond à vos critères de recherche.
+        </p>
+        <button class="btn btn-primary" onclick="resetFilters()">
+            <i class="bi bi-arrow-clockwise me-2"></i>
+            Réinitialiser les filtres
+        </button>
+    </div>
+
+    <!-- Bouton flottant -->
+    <button class="floating-action-btn" onclick="location.href='@Url.Action("Create")'">
+        <i class="bi bi-plus-lg"></i>
+    </button>
+</div>
+
+<script>
+    // Données des fournisseurs
+    const suppliersData = [
+        @foreach (var item in Model)
+        {
+                <text>
+                {
+                    id: @item.Id,
+                    name: "@Html.Raw(item.Name.Replace("\"", "\\\""))",
+                    phone: "@Html.Raw(item.Phone?.Replace("\"", "\\\"") ?? "")",
+                    displayPhone: "@Html.Raw(item.Phone ?? "Non renseigné")"
+                },
+                </text>
+        }
+    ];
+
+    // Fonction de filtrage
+    function filterSuppliers() {
+        const searchName = document.getElementById('searchName').value.toLowerCase();
+        const searchPhone = document.getElementById('searchPhone').value.toLowerCase();
+        const sortBy = document.getElementById('sortBy').value;
+        const cards = document.querySelectorAll('.supplier-card');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const name = card.getAttribute('data-name');
+            const phone = card.getAttribute('data-phone') || '';
+
+            const nameMatch = name.includes(searchName);
+            const phoneMatch = phone.includes(searchPhone);
+
+            if (nameMatch && phoneMatch) {
+                card.style.display = 'block';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Trier les cartes
+        sortCards(sortBy);
+
+        // Mettre à jour le compteur
+        document.getElementById('resultsCount').textContent = `${visibleCount} résultat${visibleCount !== 1 ? 's' : ''}`;
+
+        // Afficher/masquer l'état vide
+        const emptyState = document.getElementById('emptyState');
+        const suppliersGrid = document.getElementById('suppliersGrid');
+
+        if (visibleCount === 0) {
+            emptyState.style.display = 'block';
+            suppliersGrid.style.display = 'none';
+        } else {
+            emptyState.style.display = 'none';
+            suppliersGrid.style.display = 'grid';
+        }
+    }
+
+    // Fonction de tri
+    function sortCards(sortType) {
+        const container = document.getElementById('suppliersGrid');
+        const cards = Array.from(container.querySelectorAll('.supplier-card'));
+
+        cards.sort((a, b) => {
+            switch(sortType) {
+                case 'name_asc':
+                    return a.getAttribute('data-name').localeCompare(b.getAttribute('data-name'));
+                case 'name_desc':
+                    return b.getAttribute('data-name').localeCompare(a.getAttribute('data-name'));
+                case 'id_asc':
+                    return parseInt(a.getAttribute('data-id')) - parseInt(b.getAttribute('data-id'));
+                case 'id_desc':
+                    return parseInt(b.getAttribute('data-id')) - parseInt(a.getAttribute('data-id'));
+                default:
+                    return 0;
+            }
+        });
+
+        // Réorganiser les cartes
+        cards.forEach(card => container.appendChild(card));
+    }
+
+    // Changer la vue
+    function changeView(viewType) {
+        const grid = document.getElementById('suppliersGrid');
+        const buttons = document.querySelectorAll('.sort-btn');
+
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        if (viewType === 'list') {
+            grid.style.gridTemplateColumns = '1fr';
+            grid.style.gap = '1rem';
+        } else {
+            grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(300px, 1fr))';
+            grid.style.gap = '1.5rem';
+        }
+    }
+
+    // Réinitialiser les filtres
+    function resetFilters() {
+        document.getElementById('searchName').value = '';
+        document.getElementById('searchPhone').value = '';
+        document.getElementById('sortBy').value = 'name_asc';
+        filterSuppliers();
+
+        // Animation de réinitialisation
+        document.getElementById('resetFilters').style.transform = 'rotate(360deg)';
+        setTimeout(() => {
+            document.getElementById('resetFilters').style.transform = '';
+        }, 500);
+    }
+
+    // Exporter les données
+    function exportData(format) {
+        const filteredSuppliers = Array.from(document.querySelectorAll('.supplier-card'))
+            .filter(card => card.style.display !== 'none')
+            .map(card => ({
+                id: card.getAttribute('data-id'),
+                name: card.querySelector('.supplier-name').textContent.trim(),
+                phone: card.querySelector('.phone-value').textContent.trim()
+            }));
+
+        if (format === 'csv') {
+            let csv = 'ID,Nom,Téléphone\n';
+            filteredSuppliers.forEach(s => {
+                csv += `${s.id},"${s.name}","${s.phone}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fournisseurs_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+        }
+
+        // Notification
+        showNotification(`${filteredSuppliers.length} fournisseurs exportés en ${format.toUpperCase()}`, 'success');
+    }
+
+    // Notification
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? 'var(--success)' : 'var(--danger)'};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            animation: slideInDown 0.3s ease-out;
+        `;
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'fadeOut 0.3s ease-out forwards';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Événements
+        document.getElementById('resetFilters').addEventListener('click', resetFilters);
+
+        // Focus sur la recherche
+        document.getElementById('searchName').focus();
+
+        // Animation au chargement
+        const cards = document.querySelectorAll('.supplier-card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.05}s`;
+        });
+    });
+</script>

@@ -1,0 +1,444 @@
+﻿@model Gestion.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Connexion";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Gestion Stock</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Police Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            max-width: 420px;
+            width: 100%;
+            transition: all 0.3s ease;
+            border: 1px solid #f1f5f9;
+        }
+
+            .login-container:hover {
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+            }
+
+        .logo-container {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background-color: #f8fafc;
+        }
+
+            .form-input:focus {
+                outline: none;
+                border-color: #4f46e5;
+                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+                background-color: white;
+            }
+
+        .form-input-icon {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.1rem;
+            transition: color 0.2s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 0.85rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+            }
+
+            .btn-primary:active {
+                transform: translateY(0);
+            }
+
+        .custom-checkbox {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+            .custom-checkbox input {
+                position: absolute;
+                opacity: 0;
+                cursor: pointer;
+                height: 0;
+                width: 0;
+            }
+
+        .checkmark {
+            height: 20px;
+            width: 20px;
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            margin-right: 0.75rem;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .custom-checkbox input:checked ~ .checkmark {
+            background-color: #4f46e5;
+            border-color: #4f46e5;
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 7px;
+            top: 3px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .custom-checkbox input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #94a3b8;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+            .divider::before,
+            .divider::after {
+                content: '';
+                flex: 1;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .divider:not(:empty)::before {
+                margin-right: 1rem;
+            }
+
+            .divider:not(:empty)::after {
+                margin-left: 1rem;
+            }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            background-color: #fef2f2;
+            color: #dc2626;
+            border-left: 4px solid #dc2626;
+        }
+
+        .validation-error {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            color: #dc2626;
+            display: block;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+            .footer-links a {
+                color: #64748b;
+                font-size: 0.9rem;
+                transition: all 0.2s ease;
+                text-decoration: none;
+            }
+
+                .footer-links a:hover {
+                    color: #4f46e5;
+                    transform: translateY(-1px);
+                }
+
+        /* Animation pour les erreurs de validation - CORRIGÉE */
+        @@keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-5px);
+            }
+
+            20%, 40%, 60%, 80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .field-validation-error {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* Style pour le lien mot de passe oublié */
+        .forgot-password {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+            .forgot-password:hover {
+                color: #3730a3;
+                text-decoration: underline;
+            }
+
+        /* Style pour le copyright */
+        .copyright {
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Effet de flottement pour le logo */
+        @@keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .floating-logo {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- En-tête avec logo -->
+        <div class="logo-container">
+            <div class="flex justify-center mb-4">
+                <div class="bg-white p-3 rounded-full shadow-lg floating-logo">
+                    <i class="fas fa-boxes text-2xl text-indigo-600"></i>
+                </div>
+            </div>
+            <h1 class="text-2xl font-bold text-white mb-2">Gestion Stock</h1>
+            <p class="text-indigo-100 opacity-90">Connectez-vous à votre espace</p>
+        </div>
+
+        <!-- Formulaire -->
+        <div class="p-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6 text-center">Connexion</h2>
+
+            <form asp-action="Login" id="loginForm">
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly" class="alert mb-4"></div>
+
+                <!-- Champ Username -->
+                <div class="form-group">
+                    <label asp-for="Username" class="block text-sm font-medium text-gray-700 mb-2">Nom d'utilisateur</label>
+                    <div class="relative">
+                        <i class="fas fa-user form-input-icon"></i>
+                        <input asp-for="Username" class="form-input" placeholder="Entrez votre nom d'utilisateur" />
+                    </div>
+                    <span asp-validation-for="Username" class="validation-error"></span>
+                </div>
+
+                <!-- Champ Password -->
+                <div class="form-group">
+                    <label asp-for="Password" class="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
+                    <div class="relative">
+                        <i class="fas fa-lock form-input-icon"></i>
+                        <input asp-for="Password" type="password" class="form-input" placeholder="Entrez votre mot de passe" />
+                    </div>
+                    <span asp-validation-for="Password" class="validation-error"></span>
+                </div>
+
+                <!-- Remember Me -->
+                <div class="flex items-center justify-between mb-6">
+                    <label class="custom-checkbox">
+                        <input asp-for="RememberMe" type="checkbox" />
+                        <span class="checkmark"></span>
+                        <span class="text-sm text-gray-700">Se souvenir de moi</span>
+                    </label>
+
+                    <a href="#" class="text-sm forgot-password">
+                        Mot de passe oublié?
+                    </a>
+                </div>
+
+                <!-- Bouton de soumission -->
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Se connecter
+                </button>
+
+                <!-- Séparateur -->
+                <div class="divider text-sm">Ou</div>
+
+                <!-- Lien d'inscription (optionnel) -->
+                <div class="text-center">
+                    <p class="text-gray-600 text-sm">
+                        Pas encore de compte?
+                        <a href="#" class="text-indigo-600 font-medium hover:text-indigo-800 transition-colors ml-1">Contactez l'administrateur</a>
+                    </p>
+                </div>
+            </form>
+
+            <!-- Pied de page -->
+            <div class="mt-8 pt-6 border-t border-gray-100">
+                <div class="footer-links">
+                    <a href="#" class="flex items-center">
+                        <i class="fas fa-question-circle mr-2"></i>Aide
+                    </a>
+                    <a href="#" class="flex items-center">
+                        <i class="fas fa-shield-alt mr-2"></i>Sécurité
+                    </a>
+                    <a href="#" class="flex items-center">
+                        <i class="fas fa-envelope mr-2"></i>Contact
+                    </a>
+                </div>
+                <p class="copyright text-center mt-4">
+                    &copy; @DateTime.Now.Year Gestion Stock. Tous droits réservés.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts pour la validation côté client -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        // Améliorations interactives
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus sur le premier champ vide ou sur le champ nom d'utilisateur
+            const usernameInput = document.querySelector('input[name="Username"]');
+            const passwordInput = document.querySelector('input[name="Password"]');
+
+            if (usernameInput && !usernameInput.value) {
+                usernameInput.focus();
+            } else if (passwordInput && !passwordInput.value) {
+                passwordInput.focus();
+            }
+
+            // Animation des champs au focus
+            const formInputs = document.querySelectorAll('.form-input');
+            formInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.querySelector('.form-input-icon').style.color = '#4f46e5';
+                });
+
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        this.parentElement.querySelector('.form-input-icon').style.color = '#94a3b8';
+                    }
+                });
+            });
+
+            // Validation visuelle améliorée
+            const form = document.getElementById('loginForm');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Connexion en cours...';
+                        submitBtn.disabled = true;
+                    }
+                });
+            }
+
+            // Réinitialiser l'état du bouton si la validation échoue
+            const validator = $.data(form, 'validator');
+            if (validator) {
+                const originalInvalidHandler = validator.settings.invalidHandler;
+                validator.settings.invalidHandler = function() {
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Se connecter';
+                        submitBtn.disabled = false;
+                    }
+                    if (originalInvalidHandler) {
+                        originalInvalidHandler.call(this);
+                    }
+                };
+            }
+
+            // Ajouter une animation aux messages d'erreur
+            const errorElements = document.querySelectorAll('.validation-error');
+            errorElements.forEach(element => {
+                if (element.textContent.trim() !== '') {
+                    element.style.display = 'block';
+                    element.classList.add('field-validation-error');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
